@@ -1,6 +1,6 @@
 # mcpacket
 
-![mcpacket logo](readme-assets/logo.png)
+![mcpacket logo](https://raw.githubusercontent.com/danohn/mcpacket/main/readme-assets/logo.png)
 
 A modular Python MCP (Model Context Protocol) Server for analyzing PCAP files. mcpacket enables LLMs to read and analyze network packet captures from local or remote sources, providing structured JSON responses about network traffic.
 
