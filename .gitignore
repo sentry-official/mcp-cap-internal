@@ -207,7 +207,7 @@ marimo/_lsp/
 __marimo__/
 
 # setuptools-scm generated version file
-src/mcpacket/_version.py
+src/mcpcap/_version.py
 
 # Project specific - ignore PCAP files except in examples
 *.pcap
