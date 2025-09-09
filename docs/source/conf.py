@@ -2,8 +2,8 @@
 
 import os
 import sys
+
 import tomllib
-from pathlib import Path
 
 # Add the src directory to the path for autodoc
 sys.path.insert(0, os.path.abspath('../../src'))

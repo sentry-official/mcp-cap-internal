@@ -33,18 +33,15 @@ jobs:
       run: |
         python -c "import mcpacket; print('Version:', mcpacket.__version__)"
         
-    - name: Run linting (if available)
+    - name: Run linting with ruff
       run: |
-        # Add linting commands here when you have them configured
-        # pip install ruff
-        # ruff check .
-        echo "Linting step - configure as needed"
+        pip install ruff
+        ruff check .
+        ruff format --check .
         
-    - name: Run tests (if available)
+    - name: Run tests with pytest
       run: |
-        # Add test commands here when you have tests
-        # python -m pytest
-        echo "Test step - configure when tests are added"
+        python -m pytest tests/ -v
 
   check-version:
     runs-on: ubuntu-latest
