@@ -4,8 +4,7 @@ This directory contains example PCAP files and usage demonstrations.
 
 ## Example Files
 
-- `example.pcap` - Sample DNS traffic capture for testing
-- `complex_dns.pcapng` - More complex DNS queries with various record types
+- `dns.pcap` - Sample DNS traffic capture for testing
 
 ## Usage Examples
 
@@ -16,7 +15,7 @@ This directory contains example PCAP files and usage demonstrations.
 mcpacket --pcap-path ./examples
 
 # Then use your MCP client to analyze:
-# - list_dns_packets("example.pcap")
+# - list_dns_packets("dns.pcap")
 # - list_pcap_files()
 ```
 

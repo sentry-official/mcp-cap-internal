@@ -214,3 +214,5 @@ src/mcpacket/_version.py
 *.pcapng
 !examples/*.pcap
 !examples/*.pcapng
+
+.DS_Store
