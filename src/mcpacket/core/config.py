@@ -1,10 +1,10 @@
-"""Configuration management for mcpacket."""
+"""Configuration management for mcpcap."""
 
 import os
 
 
 class Config:
-    """Configuration management for mcpacket server."""
+    """Configuration management for mcpcap server."""
 
     def __init__(self, pcap_path: str):
         """Initialize configuration.

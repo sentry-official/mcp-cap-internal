@@ -4,8 +4,8 @@ from unittest.mock import Mock, patch
 
 import pytest
 
-from mcpacket.core.config import Config
-from mcpacket.modules.dns import DNSModule
+from mcpcap.core.config import Config
+from mcpcap.modules.dns import DNSModule
 
 
 class TestDNSModule:

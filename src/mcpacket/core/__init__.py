@@ -1,4 +1,4 @@
-"""Core components for mcpacket."""
+"""Core components for mcpcap."""
 
 from .config import Config
 from .server import MCPServer

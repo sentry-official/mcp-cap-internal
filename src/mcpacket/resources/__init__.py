@@ -1,4 +1,4 @@
-"""Resources for mcpacket analysis."""
+"""Resources for mcpcap analysis."""
 
 from .references import setup_resources
 

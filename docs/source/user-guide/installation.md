@@ -1,41 +1,41 @@
 # Installation
 
-mcpacket requires Python 3.10 or greater.
+mcpcap requires Python 3.10 or greater.
 
 ## Using pip (Recommended)
 
-Install mcpacket from PyPI:
+Install mcpcap from PyPI:
 
 ```bash
-pip install mcpacket
+pip install mcpcap
 ```
 
-This will install mcpacket and all its dependencies.
+This will install mcpcap and all its dependencies.
 
 ## Using uv
 
 If you're using [uv](https://github.com/astral-sh/uv):
 
 ```bash
-uv add mcpacket
+uv add mcpcap
 ```
 
 ## Using uvx (One-time usage)
 
-To run mcpacket without installing it permanently:
+To run mcpcap without installing it permanently:
 
 ```bash
-uvx mcpacket --pcap-path /path/to/pcap/files
+uvx mcpcap --pcap-path /path/to/pcap/files
 ```
 
 ## Development Installation
 
-If you want to contribute to mcpacket or modify it:
+If you want to contribute to mcpcap or modify it:
 
 ```bash
 # Clone the repository
-git clone https://github.com/danohn/mcpacket.git
-cd mcpacket
+git clone https://github.com/danohn/mcpcap.git
+cd mcpcap
 
 # Install in development mode with all dependencies
 pip install -e ".[dev,docs,test]"
@@ -43,23 +43,23 @@ pip install -e ".[dev,docs,test]"
 
 ## Verify Installation
 
-Verify that mcpacket is installed correctly:
+Verify that mcpcap is installed correctly:
 
 ```bash
-mcpacket --help
+mcpcap --help
 ```
 
 You should see the help message showing available command-line options.
 
 ## Dependencies
 
-mcpacket depends on:
+mcpcap depends on:
 
 - **fastmcp**: MCP server framework
 - **scapy**: Packet parsing and analysis
 - **Python 3.10+**: Modern Python features and type hints
 
-All dependencies are automatically installed when you install mcpacket.
+All dependencies are automatically installed when you install mcpcap.
 
 ## Troubleshooting
 
@@ -87,5 +87,5 @@ It's recommended to use a virtual environment:
 ```bash
 python -m venv venv
 source venv/bin/activate  # On Windows: venv\Scripts\activate
-pip install mcpacket
+pip install mcpcap
 ```

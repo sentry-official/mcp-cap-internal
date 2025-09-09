@@ -1,11 +1,11 @@
 # Quick Start Guide
 
-Get up and running with mcpacket in minutes!
+Get up and running with mcpcap in minutes!
 
-## 1. Install mcpacket
+## 1. Install mcpcap
 
 ```bash
-pip install mcpacket
+pip install mcpcap
 ```
 
 ## 2. Prepare Your PCAP Files
@@ -21,7 +21,7 @@ cp your-capture.pcap ~/pcap-analysis/
 ## 3. Start the MCP Server
 
 ```bash
-mcpacket --pcap-path ~/pcap-analysis
+mcpcap --pcap-path ~/pcap-analysis
 ```
 
 The server will start and display connection information. Keep this terminal open.
@@ -34,27 +34,27 @@ Install and run MCP Inspector:
 
 ```bash
 npm install -g @modelcontextprotocol/inspector
-npx @modelcontextprotocol/inspector mcpacket --pcap-path ~/pcap-analysis
+npx @modelcontextprotocol/inspector mcpcap --pcap-path ~/pcap-analysis
 ```
 
 This opens a web interface where you can test the tools interactively.
 
 ### Option B: Claude Desktop
 
-Add mcpacket to your Claude Desktop configuration:
+Add mcpcap to your Claude Desktop configuration:
 
 ```json
 {
   "mcpServers": {
-    "mcpacket": {
-      "command": "mcpacket",
+    "mcpcap": {
+      "command": "mcpcap",
       "args": ["--pcap-path", "/path/to/your/pcap/files"]
     }
   }
 }
 ```
 
-Restart Claude Desktop and you'll have access to mcpacket tools.
+Restart Claude Desktop and you'll have access to mcpcap tools.
 
 ## 5. Analyze Your Traffic
 
@@ -93,7 +93,7 @@ Use the `list_dns_packets` tool with a filename:
 
 ## 6. Use Analysis Prompts
 
-mcpacket includes specialized prompts for different analysis scenarios:
+mcpcap includes specialized prompts for different analysis scenarios:
 
 ### Security Analysis
 
@@ -159,6 +159,6 @@ tcpdump -r your-file.pcap -c 10 port 53
 ### Connection Issues
 
 Make sure:
-- The mcpacket server is still running
+- The mcpcap server is still running
 - No firewall is blocking connections
 - MCP client configuration matches server settings

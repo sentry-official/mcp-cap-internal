@@ -63,11 +63,11 @@ jobs:
         body: |
           ## What's Changed
           
-          Release ${{ github.ref }} of mcpacket.
+          Release ${{ github.ref }} of mcpcap.
           
           ### Installation
           ```bash
-          pip install mcpacket==${{ github.ref_name }}
+          pip install mcpcap==${{ github.ref_name }}
           ```
           
           See [CHANGELOG.md](CHANGELOG.md) for detailed changes.

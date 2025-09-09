@@ -3,14 +3,14 @@ requires = ["setuptools>=64", "setuptools-scm>=8"]
 build-backend = "setuptools.build_meta"
 
 [project]
-name = "mcpacket"
+name = "mcpcap"
 dynamic = ["version"]
 description = "A modular Python MCP Server for analyzing PCAP files"
 readme = "README.md"
 license = {text = "MIT"}
 requires-python = ">=3.10"
 authors = [
-    {name = "mcpacket contributors"}
+    {name = "mcpcap contributors"}
 ]
 keywords = ["pcap", "network", "analysis", "mcp", "dns"]
 classifiers = [
@@ -52,21 +52,21 @@ docs = [
 ]
 
 [project.urls]
-Homepage = "https://github.com/danohn/mcpacket"
-Repository = "https://github.com/danohn/mcpacket"
-Issues = "https://github.com/danohn/mcpacket/issues"
+Homepage = "https://github.com/danohn/mcpcap"
+Repository = "https://github.com/danohn/mcpcap"
+Issues = "https://github.com/danohn/mcpcap/issues"
 
 [project.scripts]
-mcpacket = "mcpacket:main"
+mcpcap = "mcpcap:main"
 
 [tool.setuptools_scm]
-write_to = "src/mcpacket/_version.py"
+write_to = "src/mcpcap/_version.py"
 version_scheme = "guess-next-dev"
 local_scheme = "node-and-date"
 
 [tool.setuptools.packages.find]
 where = ["src"]
-include = ["mcpacket*"]
+include = ["mcpcap*"]
 
 # Ruff configuration
 [tool.ruff]

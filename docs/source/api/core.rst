@@ -1,12 +1,12 @@
 Core Components
 ===============
 
-This section documents the core components of mcpacket that handle configuration and server management.
+This section documents the core components of mcpcap that handle configuration and server management.
 
 Configuration Management
 ------------------------
 
-.. automodule:: mcpacket.core.config
+.. automodule:: mcpcap.core.config
    :members:
    :undoc-members:
    :show-inheritance:
@@ -14,7 +14,7 @@ Configuration Management
 MCP Server
 ----------
 
-.. automodule:: mcpacket.core.server
+.. automodule:: mcpcap.core.server
    :members:
    :undoc-members:
    :show-inheritance:

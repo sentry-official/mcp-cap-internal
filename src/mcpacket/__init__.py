@@ -1,6 +1,6 @@
-"""mcpacket - A modular Python MCP Server for analyzing PCAP files.
+"""mcpcap - A modular Python MCP Server for analyzing PCAP files.
 
-mcpacket provides a comprehensive solution for analyzing network packet captures (PCAP files)
+mcpcap provides a comprehensive solution for analyzing network packet captures (PCAP files)
 through the Model Context Protocol (MCP). It enables LLMs to perform network traffic analysis
 with support for DNS protocol analysis and extensible architecture for additional protocols.
 
@@ -14,7 +14,7 @@ Key Features:
 Example:
     Start the MCP server with a directory containing PCAP files::
 
-        $ mcpacket --pcap-path /path/to/pcap/files
+        $ mcpcap --pcap-path /path/to/pcap/files
 
     Then connect with an MCP client to analyze DNS traffic.
 """
