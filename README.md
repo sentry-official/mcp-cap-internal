@@ -125,12 +125,6 @@ Future modules might include:
 - TCP connection tracking
 - And more!
 
-## Version
-
-Current version: **0.1.0-alpha**
-
-This is the initial alpha release. The API and functionality may change as the project evolves.
-
 ## Remote Access
 
 mcpacket supports reading PCAP files from remote HTTP servers without authentication. Future versions may include support for Basic Authentication and other security mechanisms.
