@@ -133,7 +133,7 @@ Here's a typical analysis workflow:
 
 - Explore the [MCP Integration Guide](mcp-integration.md) for detailed client setup
 - Read the [Analysis Guides](analysis-guides.md) for advanced techniques
-- Check out the [Examples](../examples/security-analysis.md) for real-world scenarios
+- Check out the examples directory for real-world scenarios
 
 ## Common Issues
 
