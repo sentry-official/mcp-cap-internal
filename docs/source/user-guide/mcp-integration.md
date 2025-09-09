@@ -1,10 +1,10 @@
 # MCP Client Integration
 
-Learn how to integrate mcpacket with different MCP (Model Context Protocol) clients.
+Learn how to integrate mcpcap with different MCP (Model Context Protocol) clients.
 
 ## What is MCP?
 
-The Model Context Protocol (MCP) enables LLMs to securely access external resources and tools. mcpacket implements an MCP server that provides DNS analysis capabilities to any compatible MCP client.
+The Model Context Protocol (MCP) enables LLMs to securely access external resources and tools. mcpcap implements an MCP server that provides DNS analysis capabilities to any compatible MCP client.
 
 ## Available MCP Clients
 
@@ -18,13 +18,13 @@ Claude Desktop is Anthropic's official desktop application with built-in MCP sup
 
 1. Install Claude Desktop from [claude.ai](https://claude.ai)
 2. Open Claude Desktop settings (Cmd/Ctrl + ,)
-3. Add mcpacket to your MCP configuration:
+3. Add mcpcap to your MCP configuration:
 
 ```json
 {
   "mcpServers": {
-    "mcpacket": {
-      "command": "mcpacket",
+    "mcpcap": {
+      "command": "mcpcap",
       "args": ["--pcap-path", "/path/to/your/pcap/files"]
     }
   }
@@ -32,7 +32,7 @@ Claude Desktop is Anthropic's official desktop application with built-in MCP sup
 ```
 
 4. Restart Claude Desktop
-5. Start a conversation and you'll see mcpacket tools available
+5. Start a conversation and you'll see mcpcap tools available
 
 #### Usage Tips
 
@@ -52,8 +52,8 @@ MCP Inspector provides a web-based interface for testing MCP servers.
 # Install globally
 npm install -g @modelcontextprotocol/inspector
 
-# Run with mcpacket
-npx @modelcontextprotocol/inspector mcpacket --pcap-path /path/to/pcaps
+# Run with mcpcap
+npx @modelcontextprotocol/inspector mcpcap --pcap-path /path/to/pcaps
 ```
 
 #### Features
@@ -65,7 +65,7 @@ npx @modelcontextprotocol/inspector mcpacket --pcap-path /path/to/pcaps
 
 ### Custom Python Client
 
-**Best for**: Developers integrating mcpacket into applications
+**Best for**: Developers integrating mcpcap into applications
 
 Build your own MCP client using the Python MCP library.
 
@@ -77,9 +77,9 @@ from mcp import ClientSession, StdioServerParameters
 from mcp.client.stdio import stdio_client
 
 async def analyze_dns():
-    # Connect to mcpacket server
+    # Connect to mcpcap server
     server_params = StdioServerParameters(
-        command="mcpacket",
+        command="mcpcap",
         args=["--pcap-path", "/path/to/pcaps"]
     )
     
@@ -145,10 +145,10 @@ Analyzes DNS packets in a PCAP file.
 
 ```bash
 # Basic usage
-mcpacket --pcap-path /path/to/pcaps
+mcpcap --pcap-path /path/to/pcaps
 
 # Advanced options (coming soon)
-mcpacket --pcap-path /path/to/pcaps --max-packets 1000 --protocols dns,http
+mcpcap --pcap-path /path/to/pcaps --max-packets 1000 --protocols dns,http
 ```
 
 ### Client Configuration Examples
@@ -158,15 +158,15 @@ mcpacket --pcap-path /path/to/pcaps --max-packets 1000 --protocols dns,http
 ```json
 {
   "mcpServers": {
-    "mcpacket-production": {
-      "command": "mcpacket",
+    "mcpcap-production": {
+      "command": "mcpcap",
       "args": ["--pcap-path", "/production/captures"],
       "env": {
         "LOG_LEVEL": "INFO"
       }
     },
-    "mcpacket-analysis": {
-      "command": "mcpacket", 
+    "mcpcap-analysis": {
+      "command": "mcpcap", 
       "args": ["--pcap-path", "/analysis/workspace"]
     }
   }
@@ -180,14 +180,14 @@ mcpacket --pcap-path /path/to/pcaps --max-packets 1000 --protocols dns,http
 export LOG_LEVEL=DEBUG
 
 # Set default PCAP path
-export MCPACKET_PCAP_PATH=/default/path
+export mcpcap_PCAP_PATH=/default/path
 ```
 
 ## Best Practices
 
 ### Security
 
-- Never point mcpacket at directories with sensitive captures
+- Never point mcpcap at directories with sensitive captures
 - Use read-only permissions for PCAP directories when possible
 - Be cautious with captures containing personal information
 
@@ -210,11 +210,11 @@ export MCPACKET_PCAP_PATH=/default/path
 **Tool not available in Claude Desktop**
 - Check MCP configuration syntax
 - Restart Claude Desktop after configuration changes
-- Verify mcpacket is installed and accessible
+- Verify mcpcap is installed and accessible
 
 **Server connection failed**
 - Ensure PCAP directory exists and is readable
-- Check that mcpacket command works from terminal
+- Check that mcpcap command works from terminal
 - Verify no other processes are using the same resources
 
 **Empty results**
@@ -234,8 +234,8 @@ export MCPACKET_PCAP_PATH=/default/path
 ```json
 {
   "mcpServers": {
-    "mcpacket-incident": {
-      "command": "mcpacket",
+    "mcpcap-incident": {
+      "command": "mcpcap",
       "args": ["--pcap-path", "/incidents/current"]
     }
   }
@@ -247,8 +247,8 @@ export MCPACKET_PCAP_PATH=/default/path
 ```json
 {
   "mcpServers": {
-    "mcpacket-network": {
-      "command": "mcpacket",
+    "mcpcap-network": {
+      "command": "mcpcap",
       "args": ["--pcap-path", "/network/diagnostics"]
     }
   }
@@ -260,8 +260,8 @@ export MCPACKET_PCAP_PATH=/default/path
 ```json
 {
   "mcpServers": {
-    "mcpacket-research": {
-      "command": "mcpacket",
+    "mcpcap-research": {
+      "command": "mcpcap",
       "args": ["--pcap-path", "/research/samples"]
     }
   }

@@ -1,12 +1,12 @@
 # Analysis Guides
 
-Learn how to effectively analyze network traffic using mcpacket's specialized capabilities.
+Learn how to effectively analyze network traffic using mcpcap's specialized capabilities.
 
 ## DNS Analysis Fundamentals
 
 ### Understanding DNS Packet Structure
 
-DNS packets contain several key components that mcpacket analyzes:
+DNS packets contain several key components that mcpcap analyzes:
 
 - **Header**: Contains flags, response codes, and packet metadata
 - **Questions**: What domain names are being queried
@@ -271,7 +271,7 @@ Look for domains with these characteristics:
 
 ### Tool Usage
 
-- Leverage mcpacket's specialized prompts for guidance
+- Leverage mcpcap's specialized prompts for guidance
 - Combine automated analysis with manual review
 - Use reference resources for DNS technical details
 - Validate findings with additional tools when possible

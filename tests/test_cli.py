@@ -2,15 +2,15 @@
 
 from unittest.mock import Mock, patch
 
-from mcpacket.cli import main
+from mcpcap.cli import main
 
 
 class TestCLI:
     """Test CLI functionality."""
 
-    @patch("mcpacket.cli.MCPServer")
-    @patch("mcpacket.cli.Config")
-    @patch("sys.argv", ["mcpacket", "--pcap-path", "/valid/path"])
+    @patch("mcpcap.cli.MCPServer")
+    @patch("mcpcap.cli.Config")
+    @patch("sys.argv", ["mcpcap", "--pcap-path", "/valid/path"])
     def test_main_success(self, mock_config, mock_server):
         """Test successful main execution."""
         # Setup mocks
@@ -29,8 +29,8 @@ class TestCLI:
         server_instance.run.assert_called_once()
         assert result == 0
 
-    @patch("mcpacket.cli.Config")
-    @patch("sys.argv", ["mcpacket", "--pcap-path", "/invalid/path"])
+    @patch("mcpcap.cli.Config")
+    @patch("sys.argv", ["mcpcap", "--pcap-path", "/invalid/path"])
     def test_main_invalid_path(self, mock_config):
         """Test main with invalid path."""
         # Setup mock to raise ValueError
@@ -44,9 +44,9 @@ class TestCLI:
         mock_print.assert_called_with("Error: Path does not exist")
         assert result == 1
 
-    @patch("mcpacket.cli.MCPServer")
-    @patch("mcpacket.cli.Config")
-    @patch("sys.argv", ["mcpacket", "--pcap-path", "/valid/path"])
+    @patch("mcpcap.cli.MCPServer")
+    @patch("mcpcap.cli.Config")
+    @patch("sys.argv", ["mcpcap", "--pcap-path", "/valid/path"])
     def test_main_keyboard_interrupt(self, mock_config, mock_server):
         """Test main with keyboard interrupt."""
         # Setup mocks
@@ -65,9 +65,9 @@ class TestCLI:
         mock_print.assert_called_with("\\nServer stopped by user")
         assert result == 0
 
-    @patch("mcpacket.cli.MCPServer")
-    @patch("mcpacket.cli.Config")
-    @patch("sys.argv", ["mcpacket", "--pcap-path", "/valid/path"])
+    @patch("mcpcap.cli.MCPServer")
+    @patch("mcpcap.cli.Config")
+    @patch("sys.argv", ["mcpcap", "--pcap-path", "/valid/path"])
     def test_main_unexpected_error(self, mock_config, mock_server):
         """Test main with unexpected error."""
         # Setup mocks

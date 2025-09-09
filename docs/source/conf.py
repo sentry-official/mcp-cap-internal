@@ -19,7 +19,7 @@ copyright = f"2024, {author}"
 
 # The version info from setuptools_scm
 try:
-    from mcpacket import __version__
+    from mcpcap import __version__
 
     version = __version__
     release = __version__

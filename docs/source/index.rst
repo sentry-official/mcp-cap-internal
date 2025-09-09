@@ -1,19 +1,19 @@
-mcpacket Documentation
+mcpcap Documentation
 ======================
 
-.. image:: https://img.shields.io/pypi/v/mcpacket.svg
-   :target: https://pypi.org/project/mcpacket/
+.. image:: https://img.shields.io/pypi/v/mcpcap.svg
+   :target: https://pypi.org/project/mcpcap/
    :alt: PyPI version
 
-.. image:: https://img.shields.io/pypi/pyversions/mcpacket.svg
-   :target: https://pypi.org/project/mcpacket/
+.. image:: https://img.shields.io/pypi/pyversions/mcpcap.svg
+   :target: https://pypi.org/project/mcpcap/
    :alt: Python versions
 
-.. image:: https://github.com/danohn/mcpacket/workflows/Test/badge.svg
-   :target: https://github.com/danohn/mcpacket/actions
+.. image:: https://github.com/danohn/mcpcap/workflows/Test/badge.svg
+   :target: https://github.com/danohn/mcpcap/actions
    :alt: Test status
 
-A modular Python MCP (Model Context Protocol) Server for analyzing PCAP files. mcpacket enables LLMs to read and analyze network packet captures from local or remote sources, providing structured JSON responses about network traffic.
+A modular Python MCP (Model Context Protocol) Server for analyzing PCAP files. mcpcap enables LLMs to read and analyze network packet captures from local or remote sources, providing structured JSON responses about network traffic.
 
 Features
 --------
@@ -33,17 +33,17 @@ Features
 Quick Start
 -----------
 
-Install mcpacket:
+Install mcpcap:
 
 .. code-block:: bash
 
-   pip install mcpacket
+   pip install mcpcap
 
 Start the MCP server:
 
 .. code-block:: bash
 
-   mcpacket --pcap-path /path/to/pcap/files
+   mcpcap --pcap-path /path/to/pcap/files
 
 Then connect with your favorite MCP client to analyze DNS traffic!
 
