@@ -31,7 +31,7 @@ jobs:
         
     - name: Check version detection
       run: |
-        python -c "import mcpacket; print('Version:', mcpacket.__version__)"
+        python -c "import mcpcap; print('Version:', mcpcap.__version__)"
         
     - name: Run linting with ruff
       run: |

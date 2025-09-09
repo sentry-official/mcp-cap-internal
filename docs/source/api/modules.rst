@@ -6,7 +6,7 @@ Protocol analysis modules provide the core functionality for parsing and analyzi
 Base Module
 -----------
 
-.. automodule:: mcpacket.modules.base
+.. automodule:: mcpcap.modules.base
    :members:
    :undoc-members:
    :show-inheritance:
@@ -14,7 +14,7 @@ Base Module
 DNS Module
 ----------
 
-.. automodule:: mcpacket.modules.dns
+.. automodule:: mcpcap.modules.dns
    :members:
    :undoc-members:
    :show-inheritance:

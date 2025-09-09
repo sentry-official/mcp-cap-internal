@@ -1,4 +1,4 @@
-"""Protocol analysis modules for mcpacket."""
+"""Protocol analysis modules for mcpcap."""
 
 from .base import BaseModule
 from .dns import DNSModule

@@ -1,6 +1,6 @@
-"""CLI entry point for mcpacket.
+"""CLI entry point for mcpcap.
 
-This module provides the command-line interface for mcpacket, handling argument parsing
+This module provides the command-line interface for mcpcap, handling argument parsing
 and server initialization.
 """
 

@@ -1,12 +1,12 @@
-# mcpacket
+# mcpcap
 
-![mcpacket logo](https://raw.githubusercontent.com/danohn/mcpacket/main/readme-assets/logo.png)
+![mcpcap logo](https://raw.githubusercontent.com/danohn/mcpcap/main/readme-assets/logo.png)
 
-A modular Python MCP (Model Context Protocol) Server for analyzing PCAP files. mcpacket enables LLMs to read and analyze network packet captures from local or remote sources, providing structured JSON responses about network traffic.
+A modular Python MCP (Model Context Protocol) Server for analyzing PCAP files. mcpcap enables LLMs to read and analyze network packet captures from local or remote sources, providing structured JSON responses about network traffic.
 
 ## Overview
 
-mcpacket uses a modular architecture to analyze different network protocols found in PCAP files. Each module focuses on a specific protocol, allowing for targeted analysis and easy extensibility. The server leverages the powerful scapy library for packet parsing and analysis.
+mcpcap uses a modular architecture to analyze different network protocols found in PCAP files. Each module focuses on a specific protocol, allowing for targeted analysis and easy extensibility. The server leverages the powerful scapy library for packet parsing and analysis.
 
 ### Key Features
 
@@ -18,24 +18,24 @@ mcpacket uses a modular architecture to analyze different network protocols foun
 
 ## Installation
 
-mcpacket requires Python 3.10 or greater.
+mcpcap requires Python 3.10 or greater.
 
 ### Using pip
 
 ```bash
-pip install mcpacket
+pip install mcpcap
 ```
 
 ### Using uv
 
 ```bash
-uv add mcpacket
+uv add mcpcap
 ```
 
 ### Using uvx (for one-time usage)
 
 ```bash
-uvx mcpacket
+uvx mcpcap
 ```
 
 ## Quick Start
@@ -43,7 +43,7 @@ uvx mcpacket
 1. **Start the MCP Server**:
 
    ```bash
-   mcpacket --pcap-path /path/to/pcap/files
+   mcpcap --pcap-path /path/to/pcap/files
    ```
 
 2. **Connect your LLM client** to the MCP server
@@ -71,7 +71,7 @@ The DNS module analyzes Domain Name System packets in PCAP files.
 
 ```python
 # LLM can ask: "What domains were queried in this PCAP?"
-# mcpacket will return structured JSON with DNS query information
+# mcpcap will return structured JSON with DNS query information
 ```
 
 ## Configuration
@@ -81,19 +81,19 @@ The DNS module analyzes Domain Name System packets in PCAP files.
 **Local Directory**:
 
 ```bash
-mcpacket --pcap-path /local/path/to/pcaps
+mcpcap --pcap-path /local/path/to/pcaps
 ```
 
 **Remote HTTP Server**:
 
 ```bash
-mcpacket --pcap-url http://example.com/pcaps/
+mcpcap --pcap-url http://example.com/pcaps/
 ```
 
 ### Module Selection
 
 ```bash
-mcpacket --modules dns --pcap-path /path/to/files
+mcpcap --modules dns --pcap-path /path/to/files
 ```
 
 ## Example
@@ -102,7 +102,7 @@ An example PCAP file (`example.pcap`) containing DNS traffic is included with th
 
 ## Architecture
 
-mcpacket's modular design makes it easy to extend support for new protocols:
+mcpcap's modular design makes it easy to extend support for new protocols:
 
 1. **Core Engine**: Handles PCAP file loading and basic packet processing
 2. **Protocol Modules**: Individual modules for specific protocols (DNS, etc.)
@@ -127,7 +127,7 @@ Future modules might include:
 
 ## Remote Access
 
-mcpacket supports reading PCAP files from remote HTTP servers without authentication. Future versions may include support for Basic Authentication and other security mechanisms.
+mcpcap supports reading PCAP files from remote HTTP servers without authentication. Future versions may include support for Basic Authentication and other security mechanisms.
 
 ## Contributing
 

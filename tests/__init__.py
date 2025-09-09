@@ -1,1 +1,1 @@
-"""Tests for mcpacket."""
+"""Tests for mcpcap."""

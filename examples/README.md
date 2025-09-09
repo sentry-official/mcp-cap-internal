@@ -1,4 +1,4 @@
-# mcpacket Examples
+# mcpcap Examples
 
 This directory contains example PCAP files and usage demonstrations.
 
@@ -12,7 +12,7 @@ This directory contains example PCAP files and usage demonstrations.
 
 ```bash
 # Start the MCP server
-mcpacket --pcap-path ./examples
+mcpcap --pcap-path ./examples
 
 # Then use your MCP client to analyze:
 # - list_dns_packets("dns.pcap")
@@ -37,7 +37,7 @@ To add new example files:
 
 1. Place PCAP files (`.pcap` or `.pcapng`) in this directory
 2. Update this README with descriptions
-3. Test with the mcpacket server
+3. Test with the mcpcap server
 
 ## Sample Output
 
