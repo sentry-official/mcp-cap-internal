@@ -1,6 +1,6 @@
 # mcpcap
 
-![mcpcap logo](https://raw.githubusercontent.com/danohn/mcpcap/main/readme-assets/logo.png)
+![mcpcap logo](https://raw.githubusercontent.com/danohn/mcpcap/main/readme-assets/mcpcap-logo.png)
 
 A modular Python MCP (Model Context Protocol) Server for analyzing PCAP files. mcpcap enables LLMs to read and analyze network packet captures from local or remote sources, providing structured JSON responses about network traffic.
 
