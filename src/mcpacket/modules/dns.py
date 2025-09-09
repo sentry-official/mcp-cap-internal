@@ -2,21 +2,23 @@
 
 import os
 from datetime import datetime
-from typing import Any, Dict
-from scapy.all import rdpcap, DNS, IP, IPv6, UDP, TCP
+from typing import Any
+
 from fastmcp import FastMCP
+from scapy.all import DNS, IP, TCP, UDP, IPv6, rdpcap
+
 from .base import BaseModule
 
 
 class DNSModule(BaseModule):
     """Module for analyzing DNS packets in PCAP files."""
-    
+
     @property
     def protocol_name(self) -> str:
         """Return the name of the protocol this module analyzes."""
         return "DNS"
-    
-    def list_dns_packets(self, pcap_file: str = "example.pcap") -> Dict[str, Any]:
+
+    def list_dns_packets(self, pcap_file: str = "example.pcap") -> dict[str, Any]:
         """
         Analyze DNS packets from a PCAP file and return a summary of each packet.
 
@@ -28,7 +30,7 @@ class DNSModule(BaseModule):
         """
         # Get full path to PCAP file
         full_path = self.config.get_pcap_file_path(pcap_file)
-        
+
         # Check if file exists
         if not os.path.exists(full_path):
             # List available PCAP files for help
@@ -40,7 +42,7 @@ class DNSModule(BaseModule):
             }
 
         return self.analyze_packets(full_path)
-    
+
     def list_pcap_files(self) -> str:
         """
         List all available PCAP files in the default directory.
@@ -55,13 +57,13 @@ class DNSModule(BaseModule):
             )
         else:
             return f"No PCAP files found in {self.config.pcap_path}"
-    
-    def analyze_packets(self, pcap_file: str) -> Dict[str, Any]:
+
+    def analyze_packets(self, pcap_file: str) -> dict[str, Any]:
         """Analyze DNS packets in a PCAP file.
-        
+
         Args:
             pcap_file: Full path to the PCAP file
-            
+
         Returns:
             Analysis results as a dictionary
         """
@@ -101,19 +103,19 @@ class DNSModule(BaseModule):
                 "error": f"Error reading PCAP file '{pcap_file}': {str(e)}",
                 "file": pcap_file,
             }
-    
-    def _analyze_dns_packet(self, pkt: Any, packet_number: int) -> Dict[str, Any]:
+
+    def _analyze_dns_packet(self, pkt: Any, packet_number: int) -> dict[str, Any]:
         """Analyze a single DNS packet.
-        
+
         Args:
             pkt: Scapy packet object
             packet_number: Packet sequence number
-            
+
         Returns:
             Dictionary containing packet analysis
         """
         dns_layer = pkt[DNS]
-        
+
         # Extract IP information
         src_ip = dst_ip = "unknown"
         if pkt.haslayer(IP):
@@ -135,19 +137,27 @@ class DNSModule(BaseModule):
         if dns_layer.qd:
             for q in dns_layer.qd:
                 try:
-                    name = q.qname.decode().rstrip(".") if hasattr(q.qname, 'decode') else str(q.qname).rstrip(".")
-                    questions.append({
-                        "name": name,
-                        "type": getattr(q, 'qtype', 0),
-                        "class": getattr(q, 'qclass', 0),
-                    })
+                    name = (
+                        q.qname.decode().rstrip(".")
+                        if hasattr(q.qname, "decode")
+                        else str(q.qname).rstrip(".")
+                    )
+                    questions.append(
+                        {
+                            "name": name,
+                            "type": getattr(q, "qtype", 0),
+                            "class": getattr(q, "qclass", 0),
+                        }
+                    )
                 except (AttributeError, UnicodeDecodeError) as e:
                     # Skip malformed questions but log the issue
-                    questions.append({
-                        "name": f"<parsing_error: {str(e)}>",
-                        "type": getattr(q, 'qtype', 0),
-                        "class": getattr(q, 'qclass', 0),
-                    })
+                    questions.append(
+                        {
+                            "name": f"<parsing_error: {str(e)}>",
+                            "type": getattr(q, "qtype", 0),
+                            "class": getattr(q, "qclass", 0),
+                        }
+                    )
 
         # Extract DNS answers
         answers = []
@@ -155,21 +165,21 @@ class DNSModule(BaseModule):
             for a in dns_layer.an:
                 try:
                     # Safely extract the resource record name
-                    if hasattr(a, 'rrname'):
-                        if hasattr(a.rrname, 'decode'):
+                    if hasattr(a, "rrname"):
+                        if hasattr(a.rrname, "decode"):
                             name = a.rrname.decode().rstrip(".")
                         else:
                             name = str(a.rrname).rstrip(".")
                     else:
                         name = "<unknown>"
-                    
+
                     answer_data = {
                         "name": name,
-                        "type": getattr(a, 'type', 0),
-                        "class": getattr(a, 'rclass', 0),
-                        "ttl": getattr(a, 'ttl', 0),
+                        "type": getattr(a, "type", 0),
+                        "class": getattr(a, "rclass", 0),
+                        "ttl": getattr(a, "ttl", 0),
                     }
-                    
+
                     # Handle different answer types
                     if hasattr(a, "rdata"):
                         try:
@@ -184,19 +194,23 @@ class DNSModule(BaseModule):
                             else:
                                 answer_data["data"] = str(a.rdata)
                         except Exception as rdata_error:
-                            answer_data["data"] = f"<rdata_parsing_error: {str(rdata_error)}>"
-                    
+                            answer_data["data"] = (
+                                f"<rdata_parsing_error: {str(rdata_error)}>"
+                            )
+
                     answers.append(answer_data)
-                    
+
                 except (AttributeError, UnicodeDecodeError) as e:
                     # Skip malformed answers but include error info
-                    answers.append({
-                        "name": f"<parsing_error: {str(e)}>",
-                        "type": getattr(a, 'type', 0),
-                        "class": getattr(a, 'rclass', 0),
-                        "ttl": getattr(a, 'ttl', 0),
-                        "data": "<malformed_record>"
-                    })
+                    answers.append(
+                        {
+                            "name": f"<parsing_error: {str(e)}>",
+                            "type": getattr(a, "type", 0),
+                            "class": getattr(a, "rclass", 0),
+                            "ttl": getattr(a, "ttl", 0),
+                            "data": "<malformed_record>",
+                        }
+                    )
 
         return {
             "packet_number": packet_number,
@@ -216,13 +230,13 @@ class DNSModule(BaseModule):
             "answers": answers,
             "summary": pkt.summary(),
         }
-    
-    def _generate_statistics(self, packet_details: list) -> Dict[str, Any]:
+
+    def _generate_statistics(self, packet_details: list) -> dict[str, Any]:
         """Generate statistics from analyzed packets.
-        
+
         Args:
             packet_details: List of analyzed packet dictionaries
-            
+
         Returns:
             Dictionary containing statistics
         """
@@ -239,14 +253,14 @@ class DNSModule(BaseModule):
             "unique_domains_queried": len(unique_domains),
             "unique_domains": list(unique_domains),
         }
-    
+
     def setup_prompts(self, mcp: FastMCP) -> None:
         """Set up DNS-specific analysis prompts for the MCP server.
-        
+
         Args:
             mcp: FastMCP server instance
         """
-        
+
         @mcp.prompt
         def security_analysis():
             """Prompt for analyzing DNS traffic from a security perspective"""
@@ -279,7 +293,7 @@ Provide specific examples and recommend follow-up investigations for any suspici
 
 1. **Performance Issues:**
    - Identify slow DNS responses (high latency)
-   - Look for timeouts and retransmissions  
+   - Look for timeouts and retransmissions
    - Check for load balancing issues
    - Analyze response times across different servers
 

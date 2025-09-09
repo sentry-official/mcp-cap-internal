@@ -1,6 +1,6 @@
 """Core components for mcpacket."""
 
-from .server import MCPServer
 from .config import Config
+from .server import MCPServer
 
 __all__ = ["MCPServer", "Config"]

@@ -5,11 +5,11 @@ from fastmcp import FastMCP
 
 def setup_resources(mcp: FastMCP) -> None:
     """Set up reference resources for the MCP server.
-    
+
     Args:
         mcp: FastMCP server instance
     """
-    
+
     @mcp.resource("dns-record-types://reference")
     def get_dns_record_types() -> str:
         """Reference guide for DNS record types"""
@@ -18,7 +18,7 @@ def setup_resources(mcp: FastMCP) -> None:
 
 ## Common Record Types:
 - **A (1)**: IPv4 address record
-- **AAAA (28)**: IPv6 address record  
+- **AAAA (28)**: IPv6 address record
 - **CNAME (5)**: Canonical name (alias)
 - **MX (15)**: Mail exchange record
 - **NS (2)**: Name server record
