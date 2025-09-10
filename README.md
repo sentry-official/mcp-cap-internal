@@ -269,6 +269,10 @@ MIT
 - fastmcp (MCP server framework)
 - All dependencies are automatically installed via pip
 
+## Documentation
+
+Full documentation is available at [docs.mcpcap.ai](https://docs.mcpcap.ai)
+
 ## Support
 
 For questions, issues, or feature requests, please open an issue on GitHub.
