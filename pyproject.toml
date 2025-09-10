@@ -74,6 +74,7 @@ include = ["mcpcap*"]
 target-version = "py310"
 line-length = 88
 src = ["src", "tests"]
+exclude = ["src/mcpcap/_version.py"]
 
 [tool.ruff.lint]
 select = [
