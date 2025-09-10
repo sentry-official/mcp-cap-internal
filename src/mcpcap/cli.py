@@ -43,11 +43,6 @@ def main():
         default="dns",
     )
     parser.add_argument(
-        "--protocols",
-        help="Comma-separated list of protocols to analyze (default: dns)",
-        default="dns",
-    )
-    parser.add_argument(
         "--max-packets",
         type=int,
         help="Maximum number of packets to analyze per file (default: unlimited)",
@@ -56,12 +51,16 @@ def main():
     args = parser.parse_args()
 
     try:
+        # Parse modules and automatically set protocols to match
+        modules = args.modules.split(",") if args.modules else ["dns"]
+        protocols = modules  # Protocols automatically match loaded modules
+
         # Initialize configuration
         config = Config(
             pcap_path=args.pcap_path,
             pcap_url=args.pcap_url,
-            modules=args.modules.split(",") if args.modules else ["dns"],
-            protocols=args.protocols.split(",") if args.protocols else ["dns"],
+            modules=modules,
+            protocols=protocols,
             max_packets=args.max_packets,
         )
 

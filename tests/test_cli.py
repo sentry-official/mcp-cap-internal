@@ -91,3 +91,55 @@ class TestCLI:
         # Verify error handling
         mock_stderr.write.assert_any_call("Unexpected error: Unexpected error")
         assert result == 1
+
+    @patch("mcpcap.cli.MCPServer")
+    @patch("mcpcap.cli.Config")
+    @patch("sys.argv", ["mcpcap", "--pcap-path", "/valid/path", "--modules", "dhcp"])
+    def test_main_dhcp_module(self, mock_config, mock_server):
+        """Test main with DHCP module specified."""
+        # Setup mocks
+        config_instance = Mock()
+        mock_config.return_value = config_instance
+
+        server_instance = Mock()
+        mock_server.return_value = server_instance
+
+        # Run main
+        result = main()
+
+        # Verify DHCP configuration
+        mock_config.assert_called_once_with(
+            pcap_path="/valid/path",
+            pcap_url=None,
+            modules=["dhcp"],
+            protocols=["dhcp"],
+            max_packets=None,
+        )
+        assert result == 0
+
+    @patch("mcpcap.cli.MCPServer")
+    @patch("mcpcap.cli.Config")
+    @patch(
+        "sys.argv", ["mcpcap", "--pcap-path", "/valid/path", "--modules", "dns,dhcp"]
+    )
+    def test_main_multiple_modules(self, mock_config, mock_server):
+        """Test main with multiple modules specified."""
+        # Setup mocks
+        config_instance = Mock()
+        mock_config.return_value = config_instance
+
+        server_instance = Mock()
+        mock_server.return_value = server_instance
+
+        # Run main
+        result = main()
+
+        # Verify multi-module configuration
+        mock_config.assert_called_once_with(
+            pcap_path="/valid/path",
+            pcap_url=None,
+            modules=["dns", "dhcp"],
+            protocols=["dns", "dhcp"],
+            max_packets=None,
+        )
+        assert result == 0
