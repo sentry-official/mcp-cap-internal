@@ -15,7 +15,7 @@ class Config:
         pcap_url: str | None = None,
         modules: list[str] | None = None,
         protocols: list[str] | None = None,
-        max_packets: int | None = None
+        max_packets: int | None = None,
     ):
         """Initialize configuration.
 
@@ -28,12 +28,14 @@ class Config:
         """
         self.pcap_path = pcap_path
         self.pcap_url = pcap_url
-        self.modules = modules or ['dns']
-        self.protocols = protocols or ['dns']
+        self.modules = modules or ["dns"]
+        self.protocols = protocols or ["dns"]
         self.max_packets = max_packets
         self.is_remote = pcap_url is not None
         self.is_direct_file_url = False  # Will be set during validation
-        self.is_direct_file_path = False  # Will be set during validation for local files
+        self.is_direct_file_path = (
+            False  # Will be set during validation for local files
+        )
 
         self._validate_configuration()
 
@@ -61,8 +63,10 @@ class Config:
 
         if os.path.isfile(self.pcap_path):
             # Check if it's a PCAP file
-            if not self.pcap_path.lower().endswith(('.pcap', '.pcapng', '.cap')):
-                raise ValueError(f"File '{self.pcap_path}' is not a supported PCAP file (.pcap/.pcapng/.cap)")
+            if not self.pcap_path.lower().endswith((".pcap", ".pcapng", ".cap")):
+                raise ValueError(
+                    f"File '{self.pcap_path}' is not a supported PCAP file (.pcap/.pcapng/.cap)"
+                )
             self.is_direct_file_path = True
         elif os.path.isdir(self.pcap_path):
             self.is_direct_file_path = False
@@ -82,10 +86,14 @@ class Config:
             # Test connectivity with a HEAD request
             response = requests.head(self.pcap_url, timeout=10)
             if response.status_code >= 400:
-                raise ValueError(f"Cannot access PCAP URL: {self.pcap_url} (HTTP {response.status_code})")
+                raise ValueError(
+                    f"Cannot access PCAP URL: {self.pcap_url} (HTTP {response.status_code})"
+                )
 
         except requests.RequestException as e:
-            raise ValueError(f"Cannot connect to PCAP URL '{self.pcap_url}': {str(e)}") from e
+            raise ValueError(
+                f"Cannot connect to PCAP URL '{self.pcap_url}': {str(e)}"
+            ) from e
 
     def _is_direct_file_url(self) -> bool:
         """Determine if the URL points directly to a PCAP file."""
@@ -93,7 +101,9 @@ class Config:
         path = parsed.path.lower()
 
         # Check if URL ends with a PCAP file extension
-        return path.endswith('.pcap') or path.endswith('.pcapng') or path.endswith('.cap')
+        return (
+            path.endswith(".pcap") or path.endswith(".pcapng") or path.endswith(".cap")
+        )
 
     def get_pcap_file_path(self, pcap_file: str) -> str:
         """Get full path or URL to a PCAP file.
@@ -106,7 +116,7 @@ class Config:
         """
         if self.is_remote:
             # If it's already a full URL, return as-is
-            if pcap_file.startswith('http'):
+            if pcap_file.startswith("http"):
                 return pcap_file
 
             # If this is a direct file URL, return the URL directly
@@ -114,7 +124,7 @@ class Config:
                 return self.pcap_url
 
             # Otherwise, treat as directory and join with filename
-            return urljoin(self.pcap_url.rstrip('/') + '/', pcap_file)
+            return urljoin(self.pcap_url.rstrip("/") + "/", pcap_file)
         else:
             # Local file handling
             if os.path.isabs(pcap_file):
@@ -169,6 +179,7 @@ class Config:
             # Parse HTML to find .pcap and .pcapng files
             # This is a simple implementation that looks for href attributes
             import re
+
             pcap_files = []
 
             # Look for links to .pcap, .pcapng, and .cap files
@@ -207,11 +218,13 @@ class Config:
 
             os.makedirs(os.path.dirname(local_path), exist_ok=True)
 
-            with open(local_path, 'wb') as f:
+            with open(local_path, "wb") as f:
                 for chunk in response.iter_content(chunk_size=8192):
                     f.write(chunk)
 
             return local_path
 
         except requests.RequestException as e:
-            raise ValueError(f"Failed to download PCAP file '{pcap_file}': {str(e)}") from e
+            raise ValueError(
+                f"Failed to download PCAP file '{pcap_file}': {str(e)}"
+            ) from e

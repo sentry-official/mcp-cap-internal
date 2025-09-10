@@ -29,29 +29,28 @@ def main():
     # PCAP source options (mutually exclusive)
     source_group = parser.add_mutually_exclusive_group(required=True)
     source_group.add_argument(
-        "--pcap-path",
-        help="Path to PCAP file or directory containing PCAP files"
+        "--pcap-path", help="Path to PCAP file or directory containing PCAP files"
     )
     source_group.add_argument(
         "--pcap-url",
-        help="HTTP URL to PCAP file (direct link) or directory containing PCAP files"
+        help="HTTP URL to PCAP file (direct link) or directory containing PCAP files",
     )
 
     # Analysis options
     parser.add_argument(
         "--modules",
         help="Comma-separated list of modules to load (default: dns)",
-        default="dns"
+        default="dns",
     )
     parser.add_argument(
         "--protocols",
         help="Comma-separated list of protocols to analyze (default: dns)",
-        default="dns"
+        default="dns",
     )
     parser.add_argument(
         "--max-packets",
         type=int,
-        help="Maximum number of packets to analyze per file (default: unlimited)"
+        help="Maximum number of packets to analyze per file (default: unlimited)",
     )
 
     args = parser.parse_args()
@@ -61,9 +60,9 @@ def main():
         config = Config(
             pcap_path=args.pcap_path,
             pcap_url=args.pcap_url,
-            modules=args.modules.split(',') if args.modules else ['dns'],
-            protocols=args.protocols.split(',') if args.protocols else ['dns'],
-            max_packets=args.max_packets
+            modules=args.modules.split(",") if args.modules else ["dns"],
+            protocols=args.protocols.split(",") if args.protocols else ["dns"],
+            max_packets=args.max_packets,
         )
 
         # Create and start MCP server

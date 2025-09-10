@@ -54,7 +54,9 @@ class DNSModule(BaseModule):
 
             # Download remote file to temporary location
             try:
-                with tempfile.NamedTemporaryFile(suffix='.pcap', delete=False) as tmp_file:
+                with tempfile.NamedTemporaryFile(
+                    suffix=".pcap", delete=False
+                ) as tmp_file:
                     temp_path = tmp_file.name
 
                 local_path = self.config.download_pcap_file(pcap_file, temp_path)
@@ -111,7 +113,9 @@ class DNSModule(BaseModule):
             A list of available PCAP files that can be analyzed
         """
         files = self.config.list_pcap_files()
-        source = self.config.pcap_url if self.config.is_remote else self.config.pcap_path
+        source = (
+            self.config.pcap_url if self.config.is_remote else self.config.pcap_path
+        )
 
         if files:
             if self.config.is_remote and self.config.is_direct_file_url:
@@ -120,8 +124,9 @@ class DNSModule(BaseModule):
                 return f"Direct PCAP file path: {source}\\n- {files[0]}"
             else:
                 source_type = "remote server" if self.config.is_remote else "directory"
-                return f"Available PCAP files in {source_type} {source}:\\n" + "\\n".join(
-                    f"- {f}" for f in sorted(files)
+                return (
+                    f"Available PCAP files in {source_type} {source}:\\n"
+                    + "\\n".join(f"- {f}" for f in sorted(files))
                 )
         else:
             source_type = "remote server" if self.config.is_remote else "directory"
@@ -152,7 +157,7 @@ class DNSModule(BaseModule):
             packets_to_analyze = dns_packets
             limited = False
             if self.config.max_packets and len(dns_packets) > self.config.max_packets:
-                packets_to_analyze = dns_packets[:self.config.max_packets]
+                packets_to_analyze = dns_packets[: self.config.max_packets]
                 limited = True
 
             packet_details = []
@@ -175,7 +180,9 @@ class DNSModule(BaseModule):
 
             # Add information about packet limiting
             if limited:
-                result["note"] = f"Analysis limited to first {self.config.max_packets} DNS packets due to --max-packets setting"
+                result["note"] = (
+                    f"Analysis limited to first {self.config.max_packets} DNS packets due to --max-packets setting"
+                )
 
             return result
 

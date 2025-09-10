@@ -27,9 +27,9 @@ class TestCLI:
         mock_config.assert_called_once_with(
             pcap_path="/valid/path",
             pcap_url=None,
-            modules=['dns'],
-            protocols=['dns'],
-            max_packets=None
+            modules=["dns"],
+            protocols=["dns"],
+            max_packets=None,
         )
         mock_server.assert_called_once_with(config_instance)
         server_instance.run.assert_called_once()
