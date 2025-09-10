@@ -356,7 +356,9 @@ class TestDHCPConfig:
             patch("os.path.exists", return_value=True),
             patch("os.path.isdir", return_value=True),
         ):
-            config = Config(pcap_path="/valid/path", modules=["dhcp"], protocols=["dhcp"])
+            config = Config(
+                pcap_path="/valid/path", modules=["dhcp"], protocols=["dhcp"]
+            )
             assert "dhcp" in config.modules
             assert "dhcp" in config.protocols
 
@@ -367,7 +369,9 @@ class TestDHCPConfig:
             patch("os.path.isdir", return_value=True),
         ):
             config = Config(
-                pcap_path="/valid/path", modules=["dns", "dhcp"], protocols=["dns", "dhcp"]
+                pcap_path="/valid/path",
+                modules=["dns", "dhcp"],
+                protocols=["dns", "dhcp"],
             )
             assert "dns" in config.modules
             assert "dhcp" in config.modules

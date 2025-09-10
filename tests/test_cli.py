@@ -119,7 +119,9 @@ class TestCLI:
 
     @patch("mcpcap.cli.MCPServer")
     @patch("mcpcap.cli.Config")
-    @patch("sys.argv", ["mcpcap", "--pcap-path", "/valid/path", "--modules", "dns,dhcp"])
+    @patch(
+        "sys.argv", ["mcpcap", "--pcap-path", "/valid/path", "--modules", "dns,dhcp"]
+    )
     def test_main_multiple_modules(self, mock_config, mock_server):
         """Test main with multiple modules specified."""
         # Setup mocks

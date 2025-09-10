@@ -262,7 +262,9 @@ class DHCPModule(BaseModule):
                 key, value = opt
 
                 if key == "message-type":
-                    dhcp_info["message_type"] = message_types.get(value, f"Unknown({value})")
+                    dhcp_info["message_type"] = message_types.get(
+                        value, f"Unknown({value})"
+                    )
                     dhcp_info["message_type_code"] = value
                 elif key == "lease_time":
                     dhcp_info["lease_time"] = value
@@ -315,18 +317,22 @@ class DHCPModule(BaseModule):
             # Count message types
             if "message_type" in pkt:
                 msg_type = pkt["message_type"]
-                stats["message_types"][msg_type] = stats["message_types"].get(msg_type, 0) + 1
+                stats["message_types"][msg_type] = (
+                    stats["message_types"].get(msg_type, 0) + 1
+                )
 
             # Track transactions
             if "transaction_id" in pkt:
                 tx_id = pkt["transaction_id"]
                 if tx_id not in stats["transactions"]:
                     stats["transactions"][tx_id] = []
-                stats["transactions"][tx_id].append({
-                    "packet_number": pkt["packet_number"],
-                    "message_type": pkt.get("message_type", "Unknown"),
-                    "timestamp": pkt["timestamp"],
-                })
+                stats["transactions"][tx_id].append(
+                    {
+                        "packet_number": pkt["packet_number"],
+                        "message_type": pkt.get("message_type", "Unknown"),
+                        "timestamp": pkt["timestamp"],
+                    }
+                )
 
         # Convert sets to counts for JSON serialization
         return {
