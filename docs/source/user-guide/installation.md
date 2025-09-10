@@ -57,6 +57,7 @@ mcpcap depends on:
 
 - **fastmcp**: MCP server framework
 - **scapy**: Packet parsing and analysis
+- **requests**: HTTP client for remote PCAP access
 - **Python 3.10+**: Modern Python features and type hints
 
 All dependencies are automatically installed when you install mcpcap.

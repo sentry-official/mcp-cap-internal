@@ -42,8 +42,24 @@ uvx mcpcap
 
 1. **Start the MCP Server**:
 
+   **Local PCAP file:**
+   ```bash
+   mcpcap --pcap-path /path/to/specific/file.pcap
+   ```
+
+   **Local PCAP directory:**
    ```bash
    mcpcap --pcap-path /path/to/pcap/files
+   ```
+
+   **Remote PCAP file:**
+   ```bash
+   mcpcap --pcap-url https://example.com/sample.pcap
+   ```
+
+   **With advanced options:**
+   ```bash
+   mcpcap --pcap-path /path/to/pcaps --max-packets 100 --protocols dns
    ```
 
 2. **Connect your LLM client** to the MCP server
@@ -78,27 +94,80 @@ The DNS module analyzes Domain Name System packets in PCAP files.
 
 ### PCAP Sources
 
-**Local Directory**:
+mcpcap supports multiple ways to specify PCAP data sources:
 
+**Local PCAP File**:
+```bash
+mcpcap --pcap-path /local/path/to/specific.pcap
+```
+
+**Local Directory**:
 ```bash
 mcpcap --pcap-path /local/path/to/pcaps
 ```
 
-**Remote HTTP Server**:
+**Remote PCAP File (Direct Link)**:
+```bash
+mcpcap --pcap-url https://wiki.wireshark.org/uploads/dns.cap
+```
 
+**Remote Directory Listing**:
 ```bash
 mcpcap --pcap-url http://example.com/pcaps/
 ```
 
-### Module Selection
+### Analysis Options
 
+**Module Selection**:
 ```bash
 mcpcap --modules dns --pcap-path /path/to/files
 ```
 
+**Protocol Filtering**:
+```bash
+mcpcap --protocols dns --pcap-path /path/to/files
+```
+
+**Packet Limiting** (for large files):
+```bash
+mcpcap --max-packets 1000 --pcap-path /path/to/files
+```
+
+**Combined Options**:
+```bash
+mcpcap --pcap-path /data/capture.pcap --max-packets 500 --protocols dns
+```
+
+## CLI Reference
+
+```bash
+mcpcap [--pcap-path PATH | --pcap-url URL] [OPTIONS]
+```
+
+**Source Options** (choose one):
+- `--pcap-path PATH`: Local PCAP file or directory
+- `--pcap-url URL`: Remote PCAP file URL or directory listing
+
+**Analysis Options**:
+- `--modules MODULES`: Comma-separated modules to load (default: dns)
+- `--protocols PROTOCOLS`: Comma-separated protocols to analyze (default: dns) 
+- `--max-packets N`: Maximum packets to analyze per file (default: unlimited)
+
+**Examples**:
+```bash
+# Analyze specific file
+mcpcap --pcap-path ./capture.pcap
+
+# Remote file with packet limit
+mcpcap --pcap-url https://example.com/dns.cap --max-packets 100
+
+# Directory with protocol filter
+mcpcap --pcap-path /captures --protocols dns --modules dns
+```
+
 ## Example
 
-An example PCAP file (`example.pcap`) containing DNS traffic is included with the project to help you get started.
+An example PCAP file (`dns.pcap`) containing DNS traffic is included in the `examples/` directory to help you get started.
 
 ## Architecture
 
@@ -127,7 +196,26 @@ Future modules might include:
 
 ## Remote Access
 
-mcpcap supports reading PCAP files from remote HTTP servers without authentication. Future versions may include support for Basic Authentication and other security mechanisms.
+mcpcap supports reading PCAP files from remote HTTP servers in two modes:
+
+**Direct File Access**: Point directly to a PCAP file URL
+```bash
+mcpcap --pcap-url https://wiki.wireshark.org/uploads/__moin_import__/attachments/SampleCaptures/dns.cap
+```
+
+**Directory Listing**: Parse HTML directory listings to find PCAP files
+```bash
+mcpcap --pcap-url http://server.com/pcap-files/
+```
+
+**Supported File Types**: `.pcap`, `.pcapng`, `.cap`
+
+**Current Limitations**:
+- HTTP/HTTPS only (no authentication)
+- Directory listings require standard HTML format
+- Files are downloaded temporarily for analysis
+
+Future versions may include support for Basic Authentication and other security mechanisms.
 
 ## Contributing
 
@@ -147,8 +235,10 @@ MIT
 ## Requirements
 
 - Python 3.10+
-- scapy
-- MCP server dependencies (automatically installed)
+- scapy (packet parsing and analysis)
+- requests (HTTP remote file access)
+- fastmcp (MCP server framework)
+- All dependencies are automatically installed via pip
 
 ## Support
 

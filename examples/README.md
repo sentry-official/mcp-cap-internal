@@ -4,32 +4,47 @@ This directory contains example PCAP files and usage demonstrations.
 
 ## Example Files
 
-- `dns.pcap` - Sample DNS traffic capture for testing
+- `dns.pcap` - Sample DNS traffic capture for testing mcpcap functionality
 
 ## Usage Examples
 
 ### Basic Analysis
 
+**Analyze the entire examples directory:**
 ```bash
-# Start the MCP server
 mcpcap --pcap-path ./examples
-
-# Then use your MCP client to analyze:
-# - list_dns_packets("dns.pcap")
-# - list_pcap_files()
 ```
 
-### Security Analysis
+**Analyze specific file:**
+```bash
+mcpcap --pcap-path ./examples/dns.pcap
+```
 
-Use the `security_analysis` prompt to focus on threat detection in DNS traffic.
+**With packet limits for faster testing:**
+```bash
+mcpcap --pcap-path ./examples/dns.pcap --max-packets 50
+```
 
-### Network Troubleshooting
+### MCP Client Testing
 
-Use the `network_troubleshooting` prompt to identify DNS performance issues.
+**With MCP Inspector:**
+```bash
+npm install -g @modelcontextprotocol/inspector
+npx @modelcontextprotocol/inspector mcpcap --pcap-path ./examples/dns.pcap
+```
 
-### Forensic Investigation
+Then use the web interface to:
+- Call `list_pcap_files()` to see available files
+- Call `list_dns_packets()` (leave filename empty for direct file mode)
+- View structured DNS analysis results
 
-Use the `forensic_investigation` prompt for detailed timeline and attribution analysis.
+### Analysis Prompts
+
+Use these specialized prompts in your MCP client:
+
+- **`security_analysis`** - Focus on threat detection in DNS traffic
+- **`network_troubleshooting`** - Identify DNS performance issues  
+- **`forensic_investigation`** - Detailed timeline and attribution analysis
 
 ## Creating Your Own Examples
 
