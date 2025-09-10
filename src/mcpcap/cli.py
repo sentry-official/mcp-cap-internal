@@ -23,7 +23,7 @@ def main():
         KeyboardInterrupt: If the user interrupts the server
         Exception: For any unexpected errors during server operation
     """
-    parser = argparse.ArgumentParser(description="PCAP DNS Analyzer MCP Server")
+    parser = argparse.ArgumentParser(description="mcpcap MCP Server")
     parser.add_argument(
         "--pcap-path", required=True, help="Path to directory containing PCAP files"
     )

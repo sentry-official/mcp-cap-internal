@@ -17,7 +17,7 @@ class MCPServer:
             config: Configuration instance
         """
         self.config = config
-        self.mcp = FastMCP("PCAP DNS Analyzer")
+        self.mcp = FastMCP("mcpcap")
 
         # Initialize modules
         self.dns_module = DNSModule(config)
