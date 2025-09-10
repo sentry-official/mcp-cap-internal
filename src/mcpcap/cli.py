@@ -5,6 +5,7 @@ and server initialization.
 """
 
 import argparse
+import sys
 
 from .core import Config, MCPServer
 
@@ -24,15 +25,46 @@ def main():
         Exception: For any unexpected errors during server operation
     """
     parser = argparse.ArgumentParser(description="mcpcap MCP Server")
+    
+    # PCAP source options (mutually exclusive)
+    source_group = parser.add_mutually_exclusive_group(required=True)
+    source_group.add_argument(
+        "--pcap-path", 
+        help="Path to directory containing PCAP files"
+    )
+    source_group.add_argument(
+        "--pcap-url", 
+        help="HTTP server URL containing PCAP files"
+    )
+    
+    # Analysis options
     parser.add_argument(
-        "--pcap-path", required=True, help="Path to directory containing PCAP files"
+        "--modules", 
+        help="Comma-separated list of modules to load (default: dns)",
+        default="dns"
+    )
+    parser.add_argument(
+        "--protocols", 
+        help="Comma-separated list of protocols to analyze (default: dns)",
+        default="dns"
+    )
+    parser.add_argument(
+        "--max-packets", 
+        type=int,
+        help="Maximum number of packets to analyze per file (default: unlimited)"
     )
 
     args = parser.parse_args()
 
     try:
         # Initialize configuration
-        config = Config(args.pcap_path)
+        config = Config(
+            pcap_path=args.pcap_path,
+            pcap_url=args.pcap_url,
+            modules=args.modules.split(',') if args.modules else ['dns'],
+            protocols=args.protocols.split(',') if args.protocols else ['dns'],
+            max_packets=args.max_packets
+        )
 
         # Create and start MCP server
         server = MCPServer(config)
@@ -40,13 +72,13 @@ def main():
         return 0
 
     except ValueError as e:
-        print(f"Error: {e}")
+        print(f"Error: {e}", file=sys.stderr)
         return 1
     except KeyboardInterrupt:
-        print("\\nServer stopped by user")
+        print("\\nServer stopped by user", file=sys.stderr)
         return 0
     except Exception as e:
-        print(f"Unexpected error: {e}")
+        print(f"Unexpected error: {e}", file=sys.stderr)
         return 1
 
 

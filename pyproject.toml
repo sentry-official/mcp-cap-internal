@@ -28,6 +28,7 @@ classifiers = [
 dependencies = [
     "fastmcp",
     "scapy",
+    "requests",
 ]
 
 [project.optional-dependencies]
