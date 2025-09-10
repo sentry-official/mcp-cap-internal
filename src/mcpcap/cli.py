@@ -30,7 +30,7 @@ def main():
     source_group = parser.add_mutually_exclusive_group(required=True)
     source_group.add_argument(
         "--pcap-path", 
-        help="Path to directory containing PCAP files"
+        help="Path to PCAP file or directory containing PCAP files"
     )
     source_group.add_argument(
         "--pcap-url", 

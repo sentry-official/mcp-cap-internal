@@ -116,6 +116,8 @@ class DNSModule(BaseModule):
         if files:
             if self.config.is_remote and self.config.is_direct_file_url:
                 return f"Direct PCAP file URL: {source}\\n- {files[0]}"
+            elif not self.config.is_remote and self.config.is_direct_file_path:
+                return f"Direct PCAP file path: {source}\\n- {files[0]}"
             else:
                 source_type = "remote server" if self.config.is_remote else "directory"
                 return f"Available PCAP files in {source_type} {source}:\\n" + "\\n".join(

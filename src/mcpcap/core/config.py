@@ -33,6 +33,7 @@ class Config:
         self.max_packets = max_packets
         self.is_remote = pcap_url is not None
         self.is_direct_file_url = False  # Will be set during validation
+        self.is_direct_file_path = False  # Will be set during validation for local files
         
         self._validate_configuration()
 
@@ -54,12 +55,19 @@ class Config:
             raise ValueError("max_packets must be a positive integer")
 
     def _validate_pcap_path(self) -> None:
-        """Validate that the PCAP path exists and is a directory."""
+        """Validate that the PCAP path exists and is either a directory or a PCAP file."""
         if not os.path.exists(self.pcap_path):
-            raise ValueError(f"PCAP directory '{self.pcap_path}' does not exist")
+            raise ValueError(f"PCAP path '{self.pcap_path}' does not exist")
 
-        if not os.path.isdir(self.pcap_path):
-            raise ValueError(f"'{self.pcap_path}' is not a directory")
+        if os.path.isfile(self.pcap_path):
+            # Check if it's a PCAP file
+            if not self.pcap_path.lower().endswith(('.pcap', '.pcapng', '.cap')):
+                raise ValueError(f"File '{self.pcap_path}' is not a supported PCAP file (.pcap/.pcapng/.cap)")
+            self.is_direct_file_path = True
+        elif os.path.isdir(self.pcap_path):
+            self.is_direct_file_path = False
+        else:
+            raise ValueError(f"'{self.pcap_path}' is neither a file nor a directory")
 
     def _validate_pcap_url(self) -> None:
         """Validate that the PCAP URL is accessible."""
@@ -108,8 +116,15 @@ class Config:
             # Otherwise, treat as directory and join with filename
             return urljoin(self.pcap_url.rstrip('/') + '/', pcap_file)
         else:
+            # Local file handling
             if os.path.isabs(pcap_file):
                 return pcap_file
+            
+            # If this is a direct file path, return it directly
+            if self.is_direct_file_path:
+                return self.pcap_path
+            
+            # Otherwise, join with directory
             return os.path.join(self.pcap_path, pcap_file)
 
     def list_pcap_files(self) -> list[str]:
@@ -121,14 +136,19 @@ class Config:
         if self.is_remote:
             return self._list_remote_pcap_files()
         else:
-            try:
-                return [
-                    f
-                    for f in os.listdir(self.pcap_path)
-                    if f.endswith((".pcap", ".pcapng"))
-                ]
-            except Exception:
-                return []
+            if self.is_direct_file_path:
+                # Return just the filename from the direct file path
+                return [os.path.basename(self.pcap_path)]
+            else:
+                # List files in directory
+                try:
+                    return [
+                        f
+                        for f in os.listdir(self.pcap_path)
+                        if f.endswith((".pcap", ".pcapng", ".cap"))
+                    ]
+                except Exception:
+                    return []
 
     def _list_remote_pcap_files(self) -> list[str]:
         """List PCAP files from a remote HTTP server.
