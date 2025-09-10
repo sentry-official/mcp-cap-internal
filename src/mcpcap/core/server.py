@@ -2,6 +2,7 @@
 
 from fastmcp import FastMCP
 
+from ..modules.dhcp import DHCPModule
 from ..modules.dns import DNSModule
 from .config import Config
 
@@ -18,20 +19,34 @@ class MCPServer:
         self.config = config
         self.mcp = FastMCP("mcpcap")
 
-        # Initialize modules
-        self.dns_module = DNSModule(config)
+        # Initialize modules based on configuration
+        self.modules = {}
+        if "dns" in self.config.modules:
+            self.modules["dns"] = DNSModule(config)
+        if "dhcp" in self.config.modules:
+            self.modules["dhcp"] = DHCPModule(config)
 
         # Register tools
         self._register_tools()
 
         # Setup prompts
-        self.dns_module.setup_prompts(self.mcp)
+        for module in self.modules.values():
+            module.setup_prompts(self.mcp)
 
     def _register_tools(self) -> None:
         """Register all available tools with the MCP server."""
-        # Register DNS module tools
-        self.mcp.tool(self.dns_module.list_dns_packets)
-        self.mcp.tool(self.dns_module.list_pcap_files)
+        # Register tools for each loaded module
+        for module_name, module in self.modules.items():
+            if module_name == "dns":
+                self.mcp.tool(module.list_dns_packets)
+            elif module_name == "dhcp":
+                self.mcp.tool(module.list_dhcp_packets)
+
+        # Register shared list_pcap_files tool (same for all modules)
+        if self.modules:
+            # Use the first available module for listing PCAP files
+            first_module = next(iter(self.modules.values()))
+            self.mcp.tool(first_module.list_pcap_files)
 
     def run(self) -> None:
         """Start the MCP server."""

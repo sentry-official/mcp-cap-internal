@@ -71,6 +71,8 @@ uvx mcpcap
 
 ## Modules
 
+mcpcap supports multiple protocol analysis modules:
+
 ### DNS Module
 
 The DNS module analyzes Domain Name System packets in PCAP files.
@@ -83,11 +85,26 @@ The DNS module analyzes Domain Name System packets in PCAP files.
 - Track query frequency and patterns
 - Identify DNS servers used
 
+### DHCP Module
+
+The DHCP module analyzes Dynamic Host Configuration Protocol packets in PCAP files.
+
+**Capabilities**:
+
+- Track DHCP transactions (DISCOVER, OFFER, REQUEST, ACK)
+- Identify DHCP clients and servers
+- Monitor IP address assignments and lease information
+- Analyze DHCP options and configurations
+- Detect DHCP anomalies and security issues
+
 **Example Usage**:
 
-```python
-# LLM can ask: "What domains were queried in this PCAP?"
-# mcpcap will return structured JSON with DNS query information
+```bash
+# Analyze DHCP traffic only
+mcpcap --pcap-path /path/to/dhcp.pcap --modules dhcp
+
+# Analyze both DNS and DHCP
+mcpcap --pcap-path /path/to/mixed.pcap --modules dns,dhcp
 ```
 
 ## Configuration
@@ -120,12 +137,23 @@ mcpcap --pcap-url http://example.com/pcaps/
 
 **Module Selection**:
 ```bash
+# Single module
 mcpcap --modules dns --pcap-path /path/to/files
+
+# Multiple modules
+mcpcap --modules dns,dhcp --pcap-path /path/to/files
 ```
 
-**Protocol Filtering**:
+**Protocol Selection** (automatically matches loaded modules):
 ```bash
-mcpcap --protocols dns --pcap-path /path/to/files
+# DNS analysis only
+mcpcap --modules dns --pcap-path /path/to/files
+
+# DHCP analysis only  
+mcpcap --modules dhcp --pcap-path /path/to/files
+
+# Both DNS and DHCP analysis
+mcpcap --modules dns,dhcp --pcap-path /path/to/files
 ```
 
 **Packet Limiting** (for large files):
@@ -135,7 +163,7 @@ mcpcap --max-packets 1000 --pcap-path /path/to/files
 
 **Combined Options**:
 ```bash
-mcpcap --pcap-path /data/capture.pcap --max-packets 500 --protocols dns
+mcpcap --pcap-path /data/capture.pcap --max-packets 500 --modules dns,dhcp
 ```
 
 ## CLI Reference
@@ -150,7 +178,8 @@ mcpcap [--pcap-path PATH | --pcap-url URL] [OPTIONS]
 
 **Analysis Options**:
 - `--modules MODULES`: Comma-separated modules to load (default: dns)
-- `--protocols PROTOCOLS`: Comma-separated protocols to analyze (default: dns) 
+  - Available modules: `dns`, `dhcp`
+  - Protocols are automatically set to match loaded modules
 - `--max-packets N`: Maximum packets to analyze per file (default: unlimited)
 
 **Examples**:
@@ -161,8 +190,8 @@ mcpcap --pcap-path ./capture.pcap
 # Remote file with packet limit
 mcpcap --pcap-url https://example.com/dns.cap --max-packets 100
 
-# Directory with protocol filter
-mcpcap --pcap-path /captures --protocols dns --modules dns
+# Directory with DHCP analysis
+mcpcap --pcap-path /captures --modules dhcp
 ```
 
 ## Example

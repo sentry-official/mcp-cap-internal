@@ -4,7 +4,7 @@ Learn how to integrate mcpcap with different MCP (Model Context Protocol) client
 
 ## What is MCP?
 
-The Model Context Protocol (MCP) enables LLMs to securely access external resources and tools. mcpcap implements an MCP server that provides DNS analysis capabilities to any compatible MCP client.
+The Model Context Protocol (MCP) enables LLMs to securely access external resources and tools. mcpcap implements an MCP server that provides network protocol analysis capabilities (DNS, DHCP, and more) to any compatible MCP client.
 
 ## Available MCP Clients
 
@@ -119,17 +119,37 @@ Lists all PCAP files in the configured directory.
 Analyzes DNS packets in a PCAP file.
 
 **Parameters**:
-- `pcap_file` (optional): Filename to analyze (defaults to "example.pcap")
+- `pcap_file` (optional): Filename to analyze (defaults to first available file)
 
-**Returns**: Structured JSON with packet details and statistics
+**Returns**: Structured JSON with DNS packet details and statistics
+
+### `list_dhcp_packets`
+
+Analyzes DHCP packets in a PCAP file.
+
+**Parameters**:
+- `pcap_file` (optional): Filename to analyze (defaults to first available file)
+
+**Returns**: Structured JSON with DHCP packet details including:
+- Complete DHCP transactions (DISCOVER → OFFER → REQUEST → ACK)
+- Client and server identification (MAC addresses, hostnames)
+- IP address assignments and lease information
+- DHCP options and configurations
+- Transaction timing and statistics
 
 ## Available Prompts
 
-### Analysis Prompts
+### DNS Analysis Prompts
 
 - `security_analysis`: Security-focused DNS analysis guidance
 - `network_troubleshooting`: Network performance troubleshooting
 - `forensic_investigation`: Digital forensics approach
+
+### DHCP Analysis Prompts
+
+- `dhcp_network_analysis`: Network administration and IP management analysis
+- `dhcp_security_analysis`: Security threats and rogue DHCP server detection
+- `dhcp_forensic_investigation`: Forensic analysis of DHCP transactions and timeline
 
 ## Configuration Options
 
@@ -146,7 +166,7 @@ mcpcap --pcap-path /path/to/specific.pcap
 mcpcap --pcap-url https://example.com/capture.pcap
 
 # With analysis options
-mcpcap --pcap-path /path/to/pcaps --max-packets 1000 --protocols dns --modules dns
+mcpcap --pcap-path /path/to/pcaps --max-packets 1000 --modules dns,dhcp
 ```
 
 ### Client Configuration Examples
@@ -162,7 +182,7 @@ mcpcap --pcap-path /path/to/pcaps --max-packets 1000 --protocols dns --modules d
     },
     "mcpcap-production": {
       "command": "mcpcap",
-      "args": ["--pcap-path", "/production/captures", "--protocols", "dns"],
+      "args": ["--pcap-path", "/production/captures", "--modules", "dns,dhcp"],
       "env": {
         "LOG_LEVEL": "INFO"
       }
@@ -220,9 +240,10 @@ export mcpcap_PCAP_PATH=/default/path
 - Verify no other processes are using the same resources
 
 **Empty results**
-- Confirm PCAP files contain DNS traffic (`port 53`)
+- Confirm PCAP files contain expected traffic (DNS on `port 53`, DHCP on `port 67/68`)
 - Check file extensions are `.pcap` or `.pcapng`
 - Verify files aren't corrupted with `file` command
+- Ensure protocol modules are properly configured (`--modules dns,dhcp`)
 
 **Performance issues**
 - Use smaller PCAP files for initial testing
