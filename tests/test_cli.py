@@ -1,6 +1,5 @@
 """Tests for CLI functionality."""
 
-import sys
 from unittest.mock import Mock, patch
 
 from mcpcap.cli import main
