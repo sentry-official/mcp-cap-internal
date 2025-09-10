@@ -3,7 +3,6 @@
 from fastmcp import FastMCP
 
 from ..modules.dns import DNSModule
-from ..resources.references import setup_resources
 from .config import Config
 
 
@@ -25,8 +24,7 @@ class MCPServer:
         # Register tools
         self._register_tools()
 
-        # Setup resources and prompts
-        setup_resources(self.mcp)
+        # Setup prompts
         self.dns_module.setup_prompts(self.mcp)
 
     def _register_tools(self) -> None:
