@@ -8,23 +8,39 @@ Get up and running with mcpcap in minutes!
 pip install mcpcap
 ```
 
-## 2. Prepare Your PCAP Files
+## 2. Choose Your PCAP Source
 
-Create a directory with your PCAP files:
+mcpcap supports multiple PCAP sources:
 
+**Single PCAP file**:
+```bash
+# Use a specific PCAP file
+mcpcap --pcap-path ~/Downloads/capture.pcap
+```
+
+**Directory of PCAP files**:
 ```bash
 mkdir ~/pcap-analysis
 # Copy your PCAP files to this directory
 cp your-capture.pcap ~/pcap-analysis/
+mcpcap --pcap-path ~/pcap-analysis
+```
+
+**Remote PCAP file**:
+```bash
+# Direct link to a PCAP file
+mcpcap --pcap-url https://wiki.wireshark.org/uploads/__moin_import__/attachments/SampleCaptures/dns.cap
 ```
 
 ## 3. Start the MCP Server
 
-```bash
-mcpcap --pcap-path ~/pcap-analysis
-```
-
 The server will start and display connection information. Keep this terminal open.
+
+**With analysis options**:
+```bash
+# Limit to first 100 packets for faster analysis
+mcpcap --pcap-path ~/pcap-analysis --max-packets 100
+```
 
 ## 4. Connect with an MCP Client
 
@@ -34,7 +50,15 @@ Install and run MCP Inspector:
 
 ```bash
 npm install -g @modelcontextprotocol/inspector
+
+# Test with local directory
 npx @modelcontextprotocol/inspector mcpcap --pcap-path ~/pcap-analysis
+
+# Test with specific file
+npx @modelcontextprotocol/inspector mcpcap --pcap-path ~/capture.pcap
+
+# Test with remote file
+npx @modelcontextprotocol/inspector mcpcap --pcap-url https://example.com/dns.cap
 ```
 
 This opens a web interface where you can test the tools interactively.

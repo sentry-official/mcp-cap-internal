@@ -37,5 +37,13 @@ class MCPServer:
 
     def run(self) -> None:
         """Start the MCP server."""
-        print(f"Starting MCP server with PCAP directory: {self.config.pcap_path}")
+        import sys
+
+        # Log to stderr to avoid breaking MCP JSON-RPC protocol
+        source = (
+            self.config.pcap_url if self.config.is_remote else self.config.pcap_path
+        )
+        source_type = "remote URL" if self.config.is_remote else "directory"
+        print(f"Starting MCP server with PCAP {source_type}: {source}", file=sys.stderr)
+
         self.mcp.run()

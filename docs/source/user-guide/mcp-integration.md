@@ -144,11 +144,17 @@ Analyzes DNS packets in a PCAP file.
 ### Server Configuration
 
 ```bash
-# Basic usage
+# Local directory
 mcpcap --pcap-path /path/to/pcaps
 
-# Advanced options (coming soon)
-mcpcap --pcap-path /path/to/pcaps --max-packets 1000 --protocols dns,http
+# Local file
+mcpcap --pcap-path /path/to/specific.pcap
+
+# Remote file
+mcpcap --pcap-url https://example.com/capture.pcap
+
+# With analysis options
+mcpcap --pcap-path /path/to/pcaps --max-packets 1000 --protocols dns --modules dns
 ```
 
 ### Client Configuration Examples
@@ -158,16 +164,20 @@ mcpcap --pcap-path /path/to/pcaps --max-packets 1000 --protocols dns,http
 ```json
 {
   "mcpServers": {
+    "mcpcap-local-file": {
+      "command": "mcpcap",
+      "args": ["--pcap-path", "/path/to/specific.pcap", "--max-packets", "500"]
+    },
     "mcpcap-production": {
       "command": "mcpcap",
-      "args": ["--pcap-path", "/production/captures"],
+      "args": ["--pcap-path", "/production/captures", "--protocols", "dns"],
       "env": {
         "LOG_LEVEL": "INFO"
       }
     },
-    "mcpcap-analysis": {
+    "mcpcap-remote": {
       "command": "mcpcap", 
-      "args": ["--pcap-path", "/analysis/workspace"]
+      "args": ["--pcap-url", "https://example.com/samples/dns.cap"]
     }
   }
 }

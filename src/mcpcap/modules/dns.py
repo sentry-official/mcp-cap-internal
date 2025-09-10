@@ -1,6 +1,7 @@
 """DNS analysis module."""
 
 import os
+import tempfile
 from datetime import datetime
 from typing import Any
 
@@ -18,45 +19,118 @@ class DNSModule(BaseModule):
         """Return the name of the protocol this module analyzes."""
         return "DNS"
 
-    def list_dns_packets(self, pcap_file: str = "example.pcap") -> dict[str, Any]:
+    def list_dns_packets(self, pcap_file: str = "") -> dict[str, Any]:
         """
         Analyze DNS packets from a PCAP file and return a summary of each packet.
 
         Args:
-            pcap_file: Path to the PCAP file to analyze (defaults to 'example.pcap')
+            pcap_file: Path to the PCAP file to analyze. Leave empty for direct URL remotes
+                      or when using the first available file in local directories.
 
         Returns:
             A structured dictionary containing DNS packet analysis results
         """
-        # Get full path to PCAP file
-        full_path = self.config.get_pcap_file_path(pcap_file)
+        # Handle remote files
+        if self.config.is_remote:
+            # For direct file URLs, always use the URL file (ignore pcap_file parameter)
+            if self.config.is_direct_file_url:
+                available_files = self.config.list_pcap_files()
+                if not available_files:
+                    return {
+                        "error": "No PCAP file found at the provided URL",
+                        "pcap_url": self.config.pcap_url,
+                    }
+                pcap_file = available_files[0]  # Use the actual filename from URL
+            elif not pcap_file:
+                # For directory URLs, if no file specified, use the first available
+                available_files = self.config.list_pcap_files()
+                if not available_files:
+                    return {
+                        "error": "No PCAP files found at the provided URL",
+                        "pcap_url": self.config.pcap_url,
+                        "available_files": [],
+                    }
+                pcap_file = available_files[0]
 
-        # Check if file exists
-        if not os.path.exists(full_path):
-            # List available PCAP files for help
-            available_files = self.config.list_pcap_files()
-            return {
-                "error": f"PCAP file '{pcap_file}' not found",
-                "available_files": available_files,
-                "pcap_directory": self.config.pcap_path,
-            }
+            # Download remote file to temporary location
+            try:
+                with tempfile.NamedTemporaryFile(
+                    suffix=".pcap", delete=False
+                ) as tmp_file:
+                    temp_path = tmp_file.name
 
-        return self.analyze_packets(full_path)
+                local_path = self.config.download_pcap_file(pcap_file, temp_path)
+                result = self.analyze_packets(local_path)
+
+                # Clean up temporary file
+                try:
+                    os.unlink(local_path)
+                except OSError:
+                    pass  # Ignore cleanup errors
+
+                return result
+
+            except Exception as e:
+                # List available PCAP files for help
+                available_files = self.config.list_pcap_files()
+                return {
+                    "error": f"Failed to download PCAP file '{pcap_file}': {str(e)}",
+                    "available_files": available_files,
+                    "pcap_source": self.config.pcap_url,
+                }
+        else:
+            # Local file handling
+            if not pcap_file:
+                # If no file specified, use the first available local file
+                available_files = self.config.list_pcap_files()
+                if not available_files:
+                    return {
+                        "error": "No PCAP files found in directory",
+                        "pcap_directory": self.config.pcap_path,
+                        "available_files": [],
+                    }
+                pcap_file = available_files[0]
+
+            full_path = self.config.get_pcap_file_path(pcap_file)
+
+            # Check if local file exists
+            if not os.path.exists(full_path):
+                # List available PCAP files for help
+                available_files = self.config.list_pcap_files()
+                return {
+                    "error": f"PCAP file '{pcap_file}' not found",
+                    "available_files": available_files,
+                    "pcap_directory": self.config.pcap_path,
+                }
+
+            return self.analyze_packets(full_path)
 
     def list_pcap_files(self) -> str:
         """
-        List all available PCAP files in the default directory.
+        List all available PCAP files in the configured directory or remote URL.
 
         Returns:
             A list of available PCAP files that can be analyzed
         """
         files = self.config.list_pcap_files()
+        source = (
+            self.config.pcap_url if self.config.is_remote else self.config.pcap_path
+        )
+
         if files:
-            return f"Available PCAP files in {self.config.pcap_path}:\\n" + "\\n".join(
-                f"- {f}" for f in sorted(files)
-            )
+            if self.config.is_remote and self.config.is_direct_file_url:
+                return f"Direct PCAP file URL: {source}\\n- {files[0]}"
+            elif not self.config.is_remote and self.config.is_direct_file_path:
+                return f"Direct PCAP file path: {source}\\n- {files[0]}"
+            else:
+                source_type = "remote server" if self.config.is_remote else "directory"
+                return (
+                    f"Available PCAP files in {source_type} {source}:\\n"
+                    + "\\n".join(f"- {f}" for f in sorted(files))
+                )
         else:
-            return f"No PCAP files found in {self.config.pcap_path}"
+            source_type = "remote server" if self.config.is_remote else "directory"
+            return f"No PCAP files found in {source_type} {source}"
 
     def analyze_packets(self, pcap_file: str) -> dict[str, Any]:
         """Analyze DNS packets in a PCAP file.
@@ -79,8 +153,15 @@ class DNSModule(BaseModule):
                     "message": "No DNS packets found in this capture",
                 }
 
+            # Apply max_packets limit if specified
+            packets_to_analyze = dns_packets
+            limited = False
+            if self.config.max_packets and len(dns_packets) > self.config.max_packets:
+                packets_to_analyze = dns_packets[: self.config.max_packets]
+                limited = True
+
             packet_details = []
-            for i, pkt in enumerate(dns_packets, 1):
+            for i, pkt in enumerate(packets_to_analyze, 1):
                 packet_info = self._analyze_dns_packet(pkt, i)
                 packet_details.append(packet_info)
 
@@ -92,9 +173,16 @@ class DNSModule(BaseModule):
                 "analysis_timestamp": datetime.now().isoformat(),
                 "total_packets_in_file": len(packets),
                 "dns_packets_found": len(dns_packets),
+                "dns_packets_analyzed": len(packet_details),
                 "statistics": stats,
                 "packets": packet_details,
             }
+
+            # Add information about packet limiting
+            if limited:
+                result["note"] = (
+                    f"Analysis limited to first {self.config.max_packets} DNS packets due to --max-packets setting"
+                )
 
             return result
 

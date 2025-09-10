@@ -216,3 +216,4 @@ src/mcpcap/_version.py
 !examples/*.pcapng
 
 .DS_Store
+plan.md
