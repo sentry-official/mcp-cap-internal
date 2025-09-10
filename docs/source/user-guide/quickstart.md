@@ -87,7 +87,7 @@ Use the `list_dns_packets` tool with a filename:
       "stackoverflow.com"
     ]
   },
-  "packets": [...]
+  "packets": ["..."]
 }
 ```
 
