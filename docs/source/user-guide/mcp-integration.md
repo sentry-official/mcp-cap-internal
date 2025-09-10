@@ -123,14 +123,6 @@ Analyzes DNS packets in a PCAP file.
 
 **Returns**: Structured JSON with packet details and statistics
 
-## Available Resources
-
-### DNS Reference Materials
-
-- `dns-record-types://reference`: DNS record types guide
-- `dns-flags://reference`: DNS flags and response codes
-- `suspicious-domains://indicators`: Security indicators for domains
-
 ## Available Prompts
 
 ### Analysis Prompts
