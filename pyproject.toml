@@ -53,9 +53,9 @@ docs = [
 ]
 
 [project.urls]
-Homepage = "https://github.com/danohn/mcpcap"
-Repository = "https://github.com/danohn/mcpcap"
-Issues = "https://github.com/danohn/mcpcap/issues"
+Homepage = "https://github.com/mcpcap/mcpcap"
+Repository = "https://github.com/mcpcap/mcpcap"
+Issues = "https://github.com/mcpcap/mcpcap/issues"
 
 [project.scripts]
 mcpcap = "mcpcap:main"
