@@ -25,15 +25,23 @@ class DNSModule(BaseModule):
 
         Args:
             pcap_file: Path to the PCAP file to analyze (defaults to 'example.pcap')
+                      For direct URL remotes, this parameter is ignored and the URL file is used
 
         Returns:
             A structured dictionary containing DNS packet analysis results
         """
-        # Get full path or URL to PCAP file
-        full_path = self.config.get_pcap_file_path(pcap_file)
-        
         # Handle remote files
         if self.config.is_remote:
+            # For direct file URLs, use the first available file (ignoring pcap_file parameter)
+            if self.config.is_direct_file_url:
+                available_files = self.config.list_pcap_files()
+                if not available_files:
+                    return {
+                        "error": "No PCAP file found at the provided URL",
+                        "pcap_url": self.config.pcap_url,
+                    }
+                pcap_file = available_files[0]  # Use the actual filename from URL
+            
             # Download remote file to temporary location
             try:
                 with tempfile.NamedTemporaryFile(suffix='.pcap', delete=False) as tmp_file:
@@ -59,6 +67,9 @@ class DNSModule(BaseModule):
                     "pcap_source": self.config.pcap_url,
                 }
         else:
+            # Local file handling
+            full_path = self.config.get_pcap_file_path(pcap_file)
+            
             # Check if local file exists
             if not os.path.exists(full_path):
                 # List available PCAP files for help
@@ -82,10 +93,13 @@ class DNSModule(BaseModule):
         source = self.config.pcap_url if self.config.is_remote else self.config.pcap_path
         
         if files:
-            source_type = "remote server" if self.config.is_remote else "directory"
-            return f"Available PCAP files in {source_type} {source}:\\n" + "\\n".join(
-                f"- {f}" for f in sorted(files)
-            )
+            if self.config.is_remote and self.config.is_direct_file_url:
+                return f"Direct PCAP file URL: {source}\\n- {files[0]}"
+            else:
+                source_type = "remote server" if self.config.is_remote else "directory"
+                return f"Available PCAP files in {source_type} {source}:\\n" + "\\n".join(
+                    f"- {f}" for f in sorted(files)
+                )
         else:
             source_type = "remote server" if self.config.is_remote else "directory"
             return f"No PCAP files found in {source_type} {source}"

@@ -32,6 +32,7 @@ class Config:
         self.protocols = protocols or ['dns']
         self.max_packets = max_packets
         self.is_remote = pcap_url is not None
+        self.is_direct_file_url = False  # Will be set during validation
         
         self._validate_configuration()
 
@@ -67,6 +68,9 @@ class Config:
             if not parsed.scheme or not parsed.netloc:
                 raise ValueError(f"Invalid URL format: {self.pcap_url}")
             
+            # Determine if this is a direct file URL or directory URL
+            self.is_direct_file_url = self._is_direct_file_url()
+            
             # Test connectivity with a HEAD request
             response = requests.head(self.pcap_url, timeout=10)
             if response.status_code >= 400:
@@ -74,6 +78,14 @@ class Config:
                 
         except requests.RequestException as e:
             raise ValueError(f"Cannot connect to PCAP URL '{self.pcap_url}': {str(e)}")
+
+    def _is_direct_file_url(self) -> bool:
+        """Determine if the URL points directly to a PCAP file."""
+        parsed = urlparse(self.pcap_url)
+        path = parsed.path.lower()
+        
+        # Check if URL ends with a PCAP file extension
+        return path.endswith('.pcap') or path.endswith('.pcapng') or path.endswith('.cap')
 
     def get_pcap_file_path(self, pcap_file: str) -> str:
         """Get full path or URL to a PCAP file.
@@ -85,8 +97,15 @@ class Config:
             Full path or URL to the PCAP file
         """
         if self.is_remote:
+            # If it's already a full URL, return as-is
             if pcap_file.startswith('http'):
                 return pcap_file
+            
+            # If this is a direct file URL, return the URL directly
+            if self.is_direct_file_url:
+                return self.pcap_url
+            
+            # Otherwise, treat as directory and join with filename
             return urljoin(self.pcap_url.rstrip('/') + '/', pcap_file)
         else:
             if os.path.isabs(pcap_file):
@@ -117,6 +136,12 @@ class Config:
         Returns:
             List of PCAP filenames found on the remote server
         """
+        # If this is a direct file URL, return just that filename
+        if self.is_direct_file_url:
+            filename = os.path.basename(urlparse(self.pcap_url).path)
+            return [filename] if filename else []
+        
+        # Otherwise try to parse directory listing
         try:
             response = requests.get(self.pcap_url, timeout=30)
             response.raise_for_status()
@@ -126,8 +151,8 @@ class Config:
             import re
             pcap_files = []
             
-            # Look for links to .pcap and .pcapng files
-            pattern = r'href=["\']([^"\']*\.pcapng?)["\']'
+            # Look for links to .pcap, .pcapng, and .cap files
+            pattern = r'href=["\']([^"\']*\.(?:pcap|pcapng|cap))["\']'
             matches = re.findall(pattern, response.text, re.IGNORECASE)
             
             for match in matches:

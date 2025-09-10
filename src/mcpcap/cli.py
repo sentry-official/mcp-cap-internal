@@ -34,7 +34,7 @@ def main():
     )
     source_group.add_argument(
         "--pcap-url", 
-        help="HTTP server URL containing PCAP files"
+        help="HTTP URL to PCAP file (direct link) or directory containing PCAP files"
     )
     
     # Analysis options
