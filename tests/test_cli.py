@@ -1,5 +1,6 @@
 """Tests for CLI functionality."""
 
+import sys
 from unittest.mock import Mock, patch
 
 from mcpcap.cli import main
@@ -24,7 +25,13 @@ class TestCLI:
         result = main()
 
         # Verify behavior
-        mock_config.assert_called_once_with("/valid/path")
+        mock_config.assert_called_once_with(
+            pcap_path="/valid/path",
+            pcap_url=None,
+            modules=['dns'],
+            protocols=['dns'],
+            max_packets=None
+        )
         mock_server.assert_called_once_with(config_instance)
         server_instance.run.assert_called_once()
         assert result == 0
@@ -37,11 +44,11 @@ class TestCLI:
         mock_config.side_effect = ValueError("Path does not exist")
 
         # Run main and capture output
-        with patch("builtins.print") as mock_print:
+        with patch("sys.stderr") as mock_stderr:
             result = main()
 
         # Verify error handling
-        mock_print.assert_called_with("Error: Path does not exist")
+        mock_stderr.write.assert_any_call("Error: Path does not exist")
         assert result == 1
 
     @patch("mcpcap.cli.MCPServer")
@@ -58,11 +65,11 @@ class TestCLI:
         mock_server.return_value = server_instance
 
         # Run main and capture output
-        with patch("builtins.print") as mock_print:
+        with patch("sys.stderr") as mock_stderr:
             result = main()
 
         # Verify graceful shutdown
-        mock_print.assert_called_with("\\nServer stopped by user")
+        mock_stderr.write.assert_any_call("\\nServer stopped by user")
         assert result == 0
 
     @patch("mcpcap.cli.MCPServer")
@@ -79,9 +86,9 @@ class TestCLI:
         mock_server.return_value = server_instance
 
         # Run main and capture output
-        with patch("builtins.print") as mock_print:
+        with patch("sys.stderr") as mock_stderr:
             result = main()
 
         # Verify error handling
-        mock_print.assert_called_with("Unexpected error: Unexpected error")
+        mock_stderr.write.assert_any_call("Unexpected error: Unexpected error")
         assert result == 1

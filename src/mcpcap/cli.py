@@ -25,31 +25,31 @@ def main():
         Exception: For any unexpected errors during server operation
     """
     parser = argparse.ArgumentParser(description="mcpcap MCP Server")
-    
+
     # PCAP source options (mutually exclusive)
     source_group = parser.add_mutually_exclusive_group(required=True)
     source_group.add_argument(
-        "--pcap-path", 
+        "--pcap-path",
         help="Path to PCAP file or directory containing PCAP files"
     )
     source_group.add_argument(
-        "--pcap-url", 
+        "--pcap-url",
         help="HTTP URL to PCAP file (direct link) or directory containing PCAP files"
     )
-    
+
     # Analysis options
     parser.add_argument(
-        "--modules", 
+        "--modules",
         help="Comma-separated list of modules to load (default: dns)",
         default="dns"
     )
     parser.add_argument(
-        "--protocols", 
+        "--protocols",
         help="Comma-separated list of protocols to analyze (default: dns)",
         default="dns"
     )
     parser.add_argument(
-        "--max-packets", 
+        "--max-packets",
         type=int,
         help="Maximum number of packets to analyze per file (default: unlimited)"
     )

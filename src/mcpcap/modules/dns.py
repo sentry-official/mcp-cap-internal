@@ -51,23 +51,23 @@ class DNSModule(BaseModule):
                         "available_files": [],
                     }
                 pcap_file = available_files[0]
-            
+
             # Download remote file to temporary location
             try:
                 with tempfile.NamedTemporaryFile(suffix='.pcap', delete=False) as tmp_file:
                     temp_path = tmp_file.name
-                
+
                 local_path = self.config.download_pcap_file(pcap_file, temp_path)
                 result = self.analyze_packets(local_path)
-                
+
                 # Clean up temporary file
                 try:
                     os.unlink(local_path)
                 except OSError:
                     pass  # Ignore cleanup errors
-                
+
                 return result
-                
+
             except Exception as e:
                 # List available PCAP files for help
                 available_files = self.config.list_pcap_files()
@@ -88,9 +88,9 @@ class DNSModule(BaseModule):
                         "available_files": [],
                     }
                 pcap_file = available_files[0]
-            
+
             full_path = self.config.get_pcap_file_path(pcap_file)
-            
+
             # Check if local file exists
             if not os.path.exists(full_path):
                 # List available PCAP files for help
@@ -112,7 +112,7 @@ class DNSModule(BaseModule):
         """
         files = self.config.list_pcap_files()
         source = self.config.pcap_url if self.config.is_remote else self.config.pcap_path
-        
+
         if files:
             if self.config.is_remote and self.config.is_direct_file_url:
                 return f"Direct PCAP file URL: {source}\\n- {files[0]}"
@@ -172,7 +172,7 @@ class DNSModule(BaseModule):
                 "statistics": stats,
                 "packets": packet_details,
             }
-            
+
             # Add information about packet limiting
             if limited:
                 result["note"] = f"Analysis limited to first {self.config.max_packets} DNS packets due to --max-packets setting"
