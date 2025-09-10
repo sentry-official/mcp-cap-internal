@@ -52,25 +52,36 @@ jobs:
         twine check dist/*
         
     - name: Create GitHub Release
-      uses: actions/create-release@v1
+      run: |
+        # Extract version without 'v' prefix for pip install
+        VERSION=${GITHUB_REF_NAME#v}
+        
+        # Get previous tag for release notes generation
+        PREV_TAG=$(git tag --sort=-version:refname | grep -v "$GITHUB_REF_NAME" | head -1)
+        
+        # Create release with auto-generated notes
+        if [ -n "$PREV_TAG" ]; then
+          gh release create $GITHUB_REF_NAME \
+            --title "Release $GITHUB_REF_NAME" \
+            --generate-notes \
+            --notes-start-tag "$PREV_TAG"
+        else
+          # First release, no previous tag
+          gh release create $GITHUB_REF_NAME \
+            --title "Release $GITHUB_REF_NAME" \
+            --generate-notes
+        fi
+        
+        # Add installation instructions to the beginning
+        gh release edit $GITHUB_REF_NAME \
+          --notes "$(echo "## Installation
+        \`\`\`bash
+        pip install mcpcap==$VERSION
+        \`\`\`
+
+        $(gh release view $GITHUB_REF_NAME --json body -q .body)")"
       env:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-      with:
-        tag_name: ${{ github.ref }}
-        release_name: Release ${{ github.ref }}
-        draft: false
-        prerelease: false
-        body: |
-          ## What's Changed
-          
-          Release ${{ github.ref }} of mcpcap.
-          
-          ### Installation
-          ```bash
-          pip install mcpcap==${{ github.ref_name }}
-          ```
-          
-          See [CHANGELOG.md](CHANGELOG.md) for detailed changes.
 
     - name: Publish to PyPI
       uses: pypa/gh-action-pypi-publish@release/v1
