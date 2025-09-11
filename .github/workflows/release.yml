@@ -116,6 +116,7 @@ jobs:
         git clone https://github.com/modelcontextprotocol/registry publisher-repo
         cd publisher-repo
         make publisher
+        # Verify expected output location and copy to repo root
         test -f bin/mcp-publisher || { echo "mcp-publisher binary not found at bin/mcp-publisher"; ls -R; exit 1; }
         cp bin/mcp-publisher ../mcp-publisher
         cd ..
@@ -123,30 +124,26 @@ jobs:
         ./mcp-publisher --version || true
 
     # -------- MCP Registry: login with DNS (mcpcap.ai) ------------------------
-    - name: Write DNS auth private key
+    # Secret MCP_PRIVATE_KEY must be a 64-character hex Ed25519 private key
+    - name: Validate MCP_PRIVATE_KEY format
       if: steps.pypi_publish.outcome == 'success'
       run: |
-        umask 177
-        cat > key.pem << 'EOF'
-        ${{ secrets.MCP_PRIVATE_KEY }}
-        EOF
-        # Verify file permissions (should be 600)
-        ls -l key.pem
+        KEY="${{ secrets.MCP_PRIVATE_KEY }}"
+        if ! [[ "$KEY" =~ ^[0-9a-fA-F]{64}$ ]]; then
+          echo "MCP_PRIVATE_KEY must be 64 hex chars (Ed25519 seed)."
+          exit 1
+        fi
 
     - name: Login to MCP Registry (DNS)
       if: steps.pypi_publish.outcome == 'success'
-      run: ./mcp-publisher login dns --domain mcpcap.ai --private-key-file key.pem
-
-    - name: Cleanup DNS auth key
-      if: steps.pypi_publish.outcome == 'success'
-      run: |
-        shred -u key.pem || rm -f key.pem
+      run: ./mcp-publisher login dns --domain mcpcap.ai --private-key "${{ secrets.MCP_PRIVATE_KEY }}"
 
     # -------- (Optional) Validate server.json before publishing ----------------
     - name: Validate server.json (optional)
       if: steps.pypi_publish.outcome == 'success'
       run: |
         if [ -f server.json ]; then
+          # Validate against published schema
           curl -s https://static.modelcontextprotocol.io/schemas/2025-07-09/server.schema.json | jq . > schema.json
           npm i -g ajv-cli >/dev/null 2>&1 || true
           ajv validate -s schema.json -d server.json || (echo "server.json failed schema validation"; exit 1)
