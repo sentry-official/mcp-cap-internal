@@ -1,6 +1,6 @@
 # mcpcap
 
-[](mcp-name:ai.mcpcap/mcpcap)
+[](mcp-name: ai.mcpcap/mcpcap)
 
 ![mcpcap logo](https://raw.githubusercontent.com/mcpcap/mcpcap/main/readme-assets/mcpcap-logo.png)
 
