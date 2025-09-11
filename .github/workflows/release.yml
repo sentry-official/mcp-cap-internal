@@ -11,7 +11,7 @@ jobs:
     permissions:
       contents: write  # Required for creating releases
       id-token: write  # Required for PyPI trusted publishing
-      
+
     steps:
     - uses: actions/checkout@v4
       with:
@@ -50,15 +50,15 @@ jobs:
       run: |
         pip install twine
         twine check dist/*
-        
+
     - name: Create GitHub Release
       run: |
         # Extract version without 'v' prefix for pip install
         VERSION=${GITHUB_REF_NAME#v}
-        
+
         # Get previous tag for release notes generation
         PREV_TAG=$(git tag --sort=-version:refname | grep -v "$GITHUB_REF_NAME" | head -1)
-        
+
         # Create release with auto-generated notes
         if [ -n "$PREV_TAG" ]; then
           gh release create $GITHUB_REF_NAME \
@@ -71,7 +71,7 @@ jobs:
             --title "Release $GITHUB_REF_NAME" \
             --generate-notes
         fi
-        
+
         # Add installation instructions to the beginning
         gh release edit $GITHUB_REF_NAME \
           --notes "$(echo "## Installation
@@ -84,10 +84,78 @@ jobs:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
     - name: Publish to PyPI
+      id: pypi_publish
       uses: pypa/gh-action-pypi-publish@release/v1
-      # Note: This uses PyPI's trusted publisher feature
-      # You'll need to configure this in your PyPI project settings
-      # Alternative: use password-based auth with secrets.PYPI_API_TOKEN
+      # Uses PyPI's trusted publisher (OIDC). Configure project on PyPI first.
+
+    # -------- MCP Registry: best practice - align server.json version ----------
+    - name: Update server.json version to tag
+      if: steps.pypi_publish.outcome == 'success'
+      run: |
+        sudo apt-get update && sudo apt-get install -y jq
+        VERSION=${GITHUB_REF#refs/tags/v}
+        if [ -f server.json ]; then
+          echo "Setting server.json version to ${VERSION}"
+          jq --arg version "$VERSION" '.version = $version' server.json > server.json.tmp
+          mv server.json.tmp server.json
+        else
+          echo "server.json not found at repo root; skipping version update"
+        fi
+
+    # -------- MCP Registry: install publisher (build from source) --------------
+    - name: Set up Go (for building mcp-publisher)
+      if: steps.pypi_publish.outcome == 'success'
+      uses: actions/setup-go@v5
+      with:
+        go-version: '1.22.x'
+
+    - name: Install MCP Publisher
+      if: steps.pypi_publish.outcome == 'success'
+      run: |
+        git clone https://github.com/modelcontextprotocol/registry publisher-repo
+        cd publisher-repo
+        make publisher
+        cp cmd/publisher/bin/mcp-publisher ../mcp-publisher
+        cd ..
+        chmod +x mcp-publisher
+        ./mcp-publisher --version || true
+
+    # -------- MCP Registry: login with DNS (mcpcap.ai) ------------------------
+    - name: Write DNS auth private key
+      if: steps.pypi_publish.outcome == 'success'
+      run: |
+        umask 177
+        cat > key.pem << 'EOF'
+        ${{ secrets.MCP_PRIVATE_KEY }}
+        EOF
+        # Verify file permissions (should be 600)
+        ls -l key.pem
+
+    - name: Login to MCP Registry (DNS)
+      if: steps.pypi_publish.outcome == 'success'
+      run: ./mcp-publisher login dns --domain mcpcap.ai --private-key-file key.pem
+
+    - name: Cleanup DNS auth key
+      if: steps.pypi_publish.outcome == 'success'
+      run: |
+        shred -u key.pem || rm -f key.pem
+
+    # -------- (Optional) Validate server.json before publishing ----------------
+    - name: Validate server.json (optional)
+      if: steps.pypi_publish.outcome == 'success'
+      run: |
+        if [ -f server.json ]; then
+          curl -s https://static.modelcontextprotocol.io/schemas/2025-07-09/server.schema.json | jq . > schema.json
+          npm i -g ajv-cli >/dev/null 2>&1 || true
+          ajv validate -s schema.json -d server.json || (echo "server.json failed schema validation"; exit 1)
+        else
+          echo "server.json not found; skipping validation"
+        fi
+
+    # -------- MCP Registry: publish -------------------------------------------
+    - name: Publish to MCP Registry
+      if: steps.pypi_publish.outcome == 'success'
+      run: ./mcp-publisher publish
 
     - name: Upload build artifacts
       uses: actions/upload-artifact@v4
