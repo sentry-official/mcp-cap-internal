@@ -7,7 +7,7 @@ name = "mcpcap"
 dynamic = ["version"]
 description = "A modular Python MCP Server for analyzing PCAP files"
 readme = "README.md"
-license = {text = "MIT"}
+license = {file = "LICENSE"}
 requires-python = ">=3.10"
 authors = [
     {name = "mcpcap contributors"}
@@ -26,9 +26,9 @@ classifiers = [
     "Topic :: Security",
 ]
 dependencies = [
-    "fastmcp",
-    "scapy",
-    "requests",
+    "fastmcp~=2.12.2",      # >=2.12.2,<2.13
+    "scapy~=2.6.1",         # >=2.6.1,<2.7
+    "requests~=2.32.5",     # >=2.32.5,<2.33
 ]
 
 [project.optional-dependencies]
@@ -53,7 +53,7 @@ docs = [
 ]
 
 [project.urls]
-Homepage = "https://github.com/mcpcap/mcpcap"
+Homepage = "https://mcpcap.ai"
 Repository = "https://github.com/mcpcap/mcpcap"
 Issues = "https://github.com/mcpcap/mcpcap/issues"
 
