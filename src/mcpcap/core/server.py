@@ -18,7 +18,7 @@ class MCPServer:
             config: Configuration instance
         """
         self.config = config
-        
+
         self.mcp = FastMCP("mcpcap")
 
         # Initialize modules based on configuration
@@ -50,6 +50,5 @@ class MCPServer:
 
     def run(self) -> None:
         """Start the MCP server."""
-        import sys
 
         self.mcp.run(show_banner=False)
