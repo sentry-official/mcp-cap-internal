@@ -13,7 +13,7 @@ We'll create an HTTP module that can:
 ## Prerequisites
 
 Before starting, ensure you have:
-- mcpcap development environment set up (see [CONTRIBUTING.md](../../../CONTRIBUTING))
+- mcpcap development environment set up (see [CONTRIBUTING.md](../../../CONTRIBUTING.md))
 - Basic understanding of HTTP protocol
 - Familiarity with Python and Scapy
 
