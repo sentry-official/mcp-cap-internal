@@ -34,7 +34,7 @@ If you want to contribute to mcpcap or modify it:
 
 ```bash
 # Clone the repository
-git clone https://github.com/danohn/mcpcap.git
+git clone https://github.com/mcpcap/mcpcap.git
 cd mcpcap
 
 # Install in development mode with all dependencies

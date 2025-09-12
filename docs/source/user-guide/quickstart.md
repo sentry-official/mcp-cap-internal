@@ -13,7 +13,7 @@ pip install mcpcap
 Start mcpcap as a stateless MCP server:
 
 ```bash
-# Start with both DNS and DHCP modules (default)
+# Start with all modules (default: dns,dhcp,icmp)
 mcpcap
 
 # Start with specific modules only
@@ -121,6 +121,35 @@ analyze_dhcp_packets("https://example.com/network-capture.pcap")
 }
 ```
 
+### ICMP Analysis
+
+Use the `analyze_icmp_packets` tool with any PCAP file containing ICMP traffic:
+
+```javascript
+analyze_icmp_packets("/path/to/network.pcap")
+analyze_icmp_packets("https://example.com/ping-capture.pcap")
+```
+
+**Example response:**
+```json
+{
+  "file": "/path/to/network.pcap", 
+  "total_packets": 100,
+  "icmp_packets_found": 12,
+  "icmp_packets_analyzed": 12,
+  "statistics": {
+    "icmp_type_counts": {
+      "Echo Request": 6,
+      "Echo Reply": 6
+    },
+    "unique_sources_count": 2,
+    "unique_destinations_count": 2,
+    "echo_sessions": 1
+  },
+  "packets": ["...detailed ICMP analysis..."]
+}
+```
+
 ## 5. Use Analysis Prompts
 
 mcpcap includes specialized prompts to guide your analysis:
@@ -165,16 +194,37 @@ mcpcap includes specialized prompts to guide your analysis:
   - Evidence collection
   - Incident reconstruction
 
+### ICMP Analysis Prompts
+
+- **`icmp_network_diagnostics`** - Network troubleshooting:
+  - Ping connectivity analysis
+  - Network path tracing
+  - RTT and latency analysis
+  - Packet loss detection
+
+- **`icmp_security_analysis`** - Security threats:
+  - ICMP-based attacks (floods, tunneling)
+  - Reconnaissance activity detection
+  - Covert channel communication
+  - Network scanning patterns
+
+- **`icmp_forensic_investigation`** - Forensic analysis:
+  - Network activity timeline
+  - Host communication patterns
+  - Evidence preservation
+  - Attack vector analysis
+
 ## 6. Example Workflow
 
 Here's a typical analysis workflow:
 
 1. **Start the server**: `mcpcap`
 2. **Analyze DNS traffic**: `analyze_dns_packets("/path/to/capture.pcap")`
-3. **Review results**: Look for unusual domains or query patterns
+3. **Review results**: Look for unusual domains or query patterns  
 4. **Use specialized prompts**: Apply security_analysis for threat detection
 5. **Analyze DHCP traffic**: `analyze_dhcp_packets("/path/to/capture.pcap")`
-6. **Cross-reference findings**: Correlate DNS and DHCP data for complete picture
+6. **Analyze ICMP traffic**: `analyze_icmp_packets("/path/to/capture.pcap")`
+7. **Cross-reference findings**: Correlate DNS, DHCP, and ICMP data for complete network picture
 
 ## 7. Configuration Options
 
@@ -187,8 +237,11 @@ mcpcap --modules dns
 # DHCP analysis only
 mcpcap --modules dhcp
 
-# Both modules (default)
-mcpcap --modules dns,dhcp
+# All modules (default)
+mcpcap --modules dns,dhcp,icmp
+
+# Or specific combinations
+mcpcap --modules dns,icmp
 ```
 
 ### Performance Tuning
@@ -211,6 +264,9 @@ analyze_dns_packets("./examples/dns.pcap")
 
 // Test DHCP analysis  
 analyze_dhcp_packets("./examples/dhcp.pcap")
+
+// Test ICMP analysis
+analyze_icmp_packets("./examples/icmp.pcap")
 ```
 
 ## Next Steps
