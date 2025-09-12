@@ -23,10 +23,21 @@ jobs:
       with:
         python-version: "3.11"
 
+    - name: Install uv
+      uses: astral-sh/setup-uv@v4
+
+    - name: Cache uv dependencies
+      uses: actions/cache@v4
+      with:
+        path: ~/.cache/uv
+        key: ${{ runner.os }}-uv-release-${{ hashFiles('pyproject.toml') }}
+        restore-keys: |
+          ${{ runner.os }}-uv-release-
+          ${{ runner.os }}-uv-
+
     - name: Install build dependencies
       run: |
-        python -m pip install --upgrade pip
-        pip install build setuptools-scm[toml]
+        uv pip install --system build setuptools-scm[toml]
 
     - name: Verify version matches tag
       run: |
@@ -53,7 +64,7 @@ jobs:
 
     - name: Verify package contents
       run: |
-        pip install twine
+        uv pip install --system twine
         twine check dist/*
 
     - name: Create GitHub Release
@@ -107,26 +118,14 @@ jobs:
           echo "server.json not found at repo root; skipping version update"
         fi
 
-    # -------- MCP Registry: install publisher (build from source) --------------
-    - name: Set up Go (for building mcp-publisher)
-      if: steps.pypi_publish.outcome == 'success'
-      uses: actions/setup-go@v5
-      with:
-        go-version: '1.24.x'
-
+    # -------- MCP Registry: install publisher (pre-built binary) ---------------
     - name: Install MCP Publisher
       if: steps.pypi_publish.outcome == 'success'
       run: |
         set -euo pipefail
-        git clone https://github.com/modelcontextprotocol/registry publisher-repo
-        cd publisher-repo
-        make publisher
-        # Verify expected output location and copy to repo root
-        test -f bin/mcp-publisher || { echo "mcp-publisher binary not found at bin/mcp-publisher"; ls -R; exit 1; }
-        cp bin/mcp-publisher ../mcp-publisher
-        cd ..
-        chmod +x mcp-publisher
-        ./mcp-publisher --version || true
+        curl -L "https://github.com/modelcontextprotocol/registry/releases/download/v1.0.0/mcp-publisher_1.0.0_$(uname -s | tr '[:upper:]' '[:lower:]')_$(uname -m | sed 's/x86_64/amd64/;s/aarch64/arm64/').tar.gz" | tar xz mcp-publisher
+        sudo mv mcp-publisher /usr/local/bin/
+        mcp-publisher --version
 
     # -------- MCP Registry: login with DNS (mcpcap.ai) ------------------------
     # Secret MCP_PRIVATE_KEY must be a 64-character hex Ed25519 private key
@@ -141,12 +140,12 @@ jobs:
 
     - name: Login to MCP Registry (DNS)
       if: steps.pypi_publish.outcome == 'success'
-      run: ./mcp-publisher login dns --domain mcpcap.ai --private-key "${{ secrets.MCP_PRIVATE_KEY }}"
+      run: mcp-publisher login dns --domain mcpcap.ai --private-key "${{ secrets.MCP_PRIVATE_KEY }}"
 
     # -------- MCP Registry: publish -------------------------------------------
     - name: Publish to MCP Registry
       if: steps.pypi_publish.outcome == 'success'
-      run: ./mcp-publisher publish
+      run: mcp-publisher publish
 
     - name: Upload build artifacts
       uses: actions/upload-artifact@v4
