@@ -7,18 +7,15 @@ class Config:
     def __init__(
         self,
         modules: list[str] | None = None,
-        protocols: list[str] | None = None,
         max_packets: int | None = None,
     ):
         """Initialize configuration.
 
         Args:
             modules: List of modules to load
-            protocols: List of protocols to analyze
             max_packets: Maximum number of packets to analyze per file
         """
-        self.modules = modules or ["dns", "dhcp"]
-        self.protocols = protocols or ["dns", "dhcp"]
+        self.modules = modules or ["dns", "dhcp", "icmp"]
         self.max_packets = max_packets
 
         self._validate_configuration()

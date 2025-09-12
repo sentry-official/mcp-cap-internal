@@ -40,14 +40,12 @@ def main():
     args = parser.parse_args()
 
     try:
-        # Parse modules and automatically set protocols to match
+        # Parse modules
         modules = args.modules.split(",") if args.modules else ["dns", "dhcp", "icmp"]
-        protocols = modules  # Protocols automatically match loaded modules
 
         # Initialize configuration
         config = Config(
             modules=modules,
-            protocols=protocols,
             max_packets=args.max_packets,
         )
 

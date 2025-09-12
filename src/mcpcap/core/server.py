@@ -18,6 +18,7 @@ class MCPServer:
             config: Configuration instance
         """
         self.config = config
+        
         self.mcp = FastMCP("mcpcap")
 
         # Initialize modules based on configuration
@@ -51,11 +52,4 @@ class MCPServer:
         """Start the MCP server."""
         import sys
 
-        # Log to stderr to avoid breaking MCP JSON-RPC protocol
-        enabled_modules = ", ".join(self.config.modules)
-        print(
-            f"Starting mcpcap MCP server with modules: {enabled_modules}",
-            file=sys.stderr,
-        )
-
-        self.mcp.run()
+        self.mcp.run(show_banner=False)

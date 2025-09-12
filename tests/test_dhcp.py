@@ -315,14 +315,11 @@ class TestDHCPConfig:
 
     def test_config_with_dhcp_module(self):
         """Test configuration with DHCP module specified."""
-        config = Config(modules=["dhcp"], protocols=["dhcp"])
+        config = Config(modules=["dhcp"])
         assert "dhcp" in config.modules
-        assert "dhcp" in config.protocols
 
     def test_config_with_multiple_modules(self):
         """Test configuration with multiple modules including DHCP."""
-        config = Config(modules=["dns", "dhcp"], protocols=["dns", "dhcp"])
+        config = Config(modules=["dns", "dhcp"])
         assert "dns" in config.modules
         assert "dhcp" in config.modules
-        assert "dns" in config.protocols
-        assert "dhcp" in config.protocols

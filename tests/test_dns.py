@@ -35,8 +35,7 @@ class TestConfig:
     def test_config_validation_success(self):
         """Test successful config validation."""
         config = Config()
-        assert config.modules == ["dns", "dhcp"]
-        assert config.protocols == ["dns", "dhcp"]
+        assert config.modules == ["dns", "dhcp", "icmp"]
 
     def test_config_validation_nonexistent_path(self):
         """Test config validation with invalid max_packets."""
@@ -50,9 +49,8 @@ class TestConfig:
 
     def test_custom_modules(self):
         """Test configuration with custom modules."""
-        config = Config(modules=["dns"], protocols=["dns"])
+        config = Config(modules=["dns"])
         assert config.modules == ["dns"]
-        assert config.protocols == ["dns"]
 
     def test_max_packets_setting(self):
         """Test max_packets configuration."""

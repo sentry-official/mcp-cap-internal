@@ -26,7 +26,6 @@ class TestCLI:
         # Verify behavior
         mock_config.assert_called_once_with(
             modules=["dns", "dhcp", "icmp"],
-            protocols=["dns", "dhcp", "icmp"],
             max_packets=None,
         )
         mock_server.assert_called_once_with(config_instance)
@@ -110,7 +109,6 @@ class TestCLI:
         # Verify DHCP configuration
         mock_config.assert_called_once_with(
             modules=["dhcp"],
-            protocols=["dhcp"],
             max_packets=None,
         )
         assert result == 0
@@ -133,7 +131,6 @@ class TestCLI:
         # Verify multi-module configuration
         mock_config.assert_called_once_with(
             modules=["dns", "dhcp"],
-            protocols=["dns", "dhcp"],
             max_packets=None,
         )
         assert result == 0
