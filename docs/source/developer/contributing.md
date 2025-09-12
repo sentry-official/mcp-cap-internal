@@ -5,7 +5,7 @@ Welcome to the mcpcap developer guide! This section contains everything you need
 ## Quick Links
 
 - **[Module Creation Tutorial](module-creation-tutorial.md)** - Step-by-step guide to creating new protocol analyzers
-- **[CONTRIBUTING.md](../../../CONTRIBUTING.md)** - Full development setup and contribution guidelines
+- **[CONTRIBUTING.md](../../../CONTRIBUTING)** - Full development setup and contribution guidelines
 
 ## Getting Started
 

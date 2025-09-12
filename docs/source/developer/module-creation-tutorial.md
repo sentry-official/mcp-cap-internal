@@ -13,7 +13,7 @@ We'll create an HTTP module that can:
 ## Prerequisites
 
 Before starting, ensure you have:
-- mcpcap development environment set up (see [CONTRIBUTING.md](../../../CONTRIBUTING.md))
+- mcpcap development environment set up (see [CONTRIBUTING.md](../../../CONTRIBUTING))
 - Basic understanding of HTTP protocol
 - Familiarity with Python and Scapy
 
@@ -400,7 +400,7 @@ Present findings with timestamps, evidence preservation notes, and clear documen
 
 Now we need to register our HTTP module with the MCP server. Edit `src/mcpcap/core/server.py`:
 
-```python
+```text
 # Add import at the top
 from ..modules.http import HTTPModule
 
