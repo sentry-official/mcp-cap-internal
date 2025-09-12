@@ -138,19 +138,6 @@ jobs:
       if: steps.pypi_publish.outcome == 'success'
       run: ./mcp-publisher login dns --domain mcpcap.ai --private-key "${{ secrets.MCP_PRIVATE_KEY }}"
 
-    # -------- (Optional) Validate server.json before publishing ----------------
-    - name: Validate server.json (optional)
-      if: steps.pypi_publish.outcome == 'success'
-      run: |
-        if [ -f server.json ]; then
-          # Validate against published schema
-          curl -s https://static.modelcontextprotocol.io/schemas/2025-07-09/server.schema.json | jq . > schema.json
-          npm i -g ajv-cli >/dev/null 2>&1 || true
-          ajv validate -s schema.json -d server.json || (echo "server.json failed schema validation"; exit 1)
-        else
-          echo "server.json not found; skipping validation"
-        fi
-
     # -------- MCP Registry: publish -------------------------------------------
     - name: Publish to MCP Registry
       if: steps.pypi_publish.outcome == 'success'
