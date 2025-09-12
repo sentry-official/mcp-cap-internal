@@ -282,3 +282,69 @@ Look for domains with these characteristics:
 - Provide actionable recommendations
 - Document confidence levels in findings
 - Maintain professional presentation standards
+
+## DHCP Analysis Fundamentals
+
+### Understanding DHCP Packet Structure
+
+DHCP packets contain several key components:
+
+- **Header**: Message type, transaction ID, flags
+- **Client/Server Addresses**: IP address assignments
+- **Options**: Network configuration parameters
+- **Message Types**: DISCOVER, OFFER, REQUEST, ACK, NAK, RELEASE
+
+### Key Metrics to Monitor
+
+**DHCP Transaction Flow**
+- Normal: Complete 4-way handshake (DISCOVER→OFFER→REQUEST→ACK)
+- Problem: Incomplete transactions or excessive retries
+- Security: Unexpected message types or timing
+
+**IP Address Management**
+- Normal: Organized lease allocation and renewal
+- Problem: Address pool exhaustion or conflicts
+- Security: Unauthorized DHCP servers or spoofing
+
+### Security Indicators
+
+**Rogue DHCP Servers**
+- Multiple DHCP servers responding
+- Unexpected server IP addresses
+- Suspicious network configuration options
+
+**DHCP Attacks**
+- DHCP starvation (excessive DISCOVER requests)
+- Malicious DHCP options (DNS poisoning)
+- MAC address spoofing patterns
+
+## ICMP Analysis Fundamentals
+
+### Understanding ICMP Packet Structure
+
+ICMP packets provide network diagnostics:
+
+- **Type/Code**: Message type and sub-type
+- **Echo Request/Reply**: Ping functionality
+- **Error Messages**: Network unreachable, TTL exceeded
+- **Timestamp**: Round-trip time analysis
+
+### Key Metrics to Monitor
+
+**Ping Analysis**
+- Normal: Regular echo request/reply pairs
+- Problem: High packet loss or excessive latency
+- Security: ICMP tunneling or covert channels
+
+**Network Diagnostics**
+- Normal: Occasional error messages
+- Problem: Excessive unreachable messages
+- Security: Network reconnaissance patterns
+
+### Security Indicators
+
+**ICMP-based Attacks**
+- ICMP flood attacks
+- ICMP tunneling for data exfiltration
+- Network reconnaissance and scanning
+- Covert channel communication
