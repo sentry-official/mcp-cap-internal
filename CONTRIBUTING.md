@@ -39,10 +39,10 @@ Thank you for your interest in contributing to mcpcap! This guide will help you 
    pip install -e ".[dev]"
    ```
 
-4. **Install development tools:**
+4. **Development tools are already included:**
    ```bash
-   # Add development tools to the project dependencies
-   pip install ruff mypy
+   # The [dev] dependencies include ruff, mypy, pytest, etc.
+   # No additional installation needed
    ```
 
 5. **Verify installation:**
