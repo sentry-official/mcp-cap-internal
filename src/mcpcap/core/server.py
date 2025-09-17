@@ -2,6 +2,7 @@
 
 from fastmcp import FastMCP
 
+from ..modules.capinfos import CapInfosModule
 from ..modules.dhcp import DHCPModule
 from ..modules.dns import DNSModule
 from ..modules.icmp import ICMPModule
@@ -29,6 +30,8 @@ class MCPServer:
             self.modules["dhcp"] = DHCPModule(config)
         if "icmp" in self.config.modules:
             self.modules["icmp"] = ICMPModule(config)
+        if "capinfos" in self.config.modules:
+            self.modules["capinfos"] = CapInfosModule(config)
 
         # Register tools
         self._register_tools()
@@ -47,6 +50,8 @@ class MCPServer:
                 self.mcp.tool(module.analyze_dhcp_packets)
             elif module_name == "icmp":
                 self.mcp.tool(module.analyze_icmp_packets)
+            elif module_name == "capinfos":
+                self.mcp.tool(module.analyze_capinfos)
 
     def run(self) -> None:
         """Start the MCP server."""
