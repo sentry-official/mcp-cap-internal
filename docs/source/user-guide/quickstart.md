@@ -13,7 +13,7 @@ pip install mcpcap
 Start mcpcap as a stateless MCP server:
 
 ```bash
-# Start with all modules (default: dns,dhcp,icmp)
+# Start with all modules (default: dns,dhcp,icmp,capinfos)
 mcpcap
 
 # Start with specific modules only
@@ -59,7 +59,7 @@ Restart Claude Desktop and you'll have access to mcpcap analysis tools.
 
 ### DNS Analysis
 
-Use the `analyze_dns_packets` tool with any PCAP file:
+Use the `analyze_dns_packets` tool with any PCAP file by providing file paths or URLs (not file uploads):
 
 **Local files:**
 ```javascript
@@ -92,7 +92,7 @@ analyze_dns_packets("https://wiki.wireshark.org/uploads/dns.cap")
 
 ### DHCP Analysis
 
-Use the `analyze_dhcp_packets` tool with any PCAP file containing DHCP traffic:
+Use the `analyze_dhcp_packets` tool with any PCAP file containing DHCP traffic (provide file path or URL):
 
 ```javascript
 analyze_dhcp_packets("/path/to/dhcp.pcap")
@@ -123,7 +123,7 @@ analyze_dhcp_packets("https://example.com/network-capture.pcap")
 
 ### ICMP Analysis
 
-Use the `analyze_icmp_packets` tool with any PCAP file containing ICMP traffic:
+Use the `analyze_icmp_packets` tool with any PCAP file containing ICMP traffic (provide file path or URL):
 
 ```javascript
 analyze_icmp_packets("/path/to/network.pcap")
@@ -147,6 +147,33 @@ analyze_icmp_packets("https://example.com/ping-capture.pcap")
     "echo_sessions": 1
   },
   "packets": ["...detailed ICMP analysis..."]
+}
+```
+
+### CapInfos Analysis
+
+Use the `analyze_capinfos` tool to get metadata and statistics from any PCAP file:
+
+```javascript
+analyze_capinfos("/path/to/capture.pcap")
+analyze_capinfos("https://example.com/network.pcap")
+```
+
+**Example response:**
+```json
+{
+  "file_size_bytes": 4338,
+  "filename": "dns.pcap",
+  "file_encapsulation": "Ethernet",
+  "packet_count": 38,
+  "data_size_bytes": 3706,
+  "capture_duration_seconds": 278.879,
+  "first_packet_time": 1112172466.496046,
+  "last_packet_time": 1112172745.375359,
+  "data_rate_bytes": 13.29,
+  "data_rate_bits": 106.31,
+  "average_packet_size_bytes": 97.53,
+  "average_packet_rate": 0.136
 }
 ```
 
@@ -224,7 +251,8 @@ Here's a typical analysis workflow:
 4. **Use specialized prompts**: Apply security_analysis for threat detection
 5. **Analyze DHCP traffic**: `analyze_dhcp_packets("/path/to/capture.pcap")`
 6. **Analyze ICMP traffic**: `analyze_icmp_packets("/path/to/capture.pcap")`
-7. **Cross-reference findings**: Correlate DNS, DHCP, and ICMP data for complete network picture
+7. **Get file metadata**: `analyze_capinfos("/path/to/capture.pcap")`
+8. **Cross-reference findings**: Correlate DNS, DHCP, ICMP data and metadata for complete network picture
 
 ## 7. Configuration Options
 
@@ -238,10 +266,10 @@ mcpcap --modules dns
 mcpcap --modules dhcp
 
 # All modules (default)
-mcpcap --modules dns,dhcp,icmp
+mcpcap --modules dns,dhcp,icmp,capinfos
 
 # Or specific combinations
-mcpcap --modules dns,icmp
+mcpcap --modules dns,icmp,capinfos
 ```
 
 ### Performance Tuning
@@ -251,7 +279,7 @@ mcpcap --modules dns,icmp
 mcpcap --max-packets 1000
 
 # Combined configuration
-mcpcap --modules dns --max-packets 500
+mcpcap --modules dns,capinfos --max-packets 500
 ```
 
 ## 8. Testing with Examples
@@ -267,6 +295,9 @@ analyze_dhcp_packets("./examples/dhcp.pcap")
 
 // Test ICMP analysis
 analyze_icmp_packets("./examples/icmp.pcap")
+
+// Test CapInfos analysis
+analyze_capinfos("./examples/dns.pcap")
 ```
 
 ## Next Steps

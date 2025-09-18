@@ -36,10 +36,11 @@ Claude Desktop is Anthropic's official desktop application with built-in MCP sup
 
 #### Usage Tips
 
-- Ask Claude to analyze DNS traffic: `analyze_dns_packets("/path/to/malware.pcap")`
+- Ask Claude to analyze DNS traffic: `analyze_dns_packets("/path/to/malware.pcap")` (provide file path or URL, not uploads)
 - Request security-focused analysis: "Use security_analysis prompt to examine this DNS data"
-- Get troubleshooting help: "Use network_troubleshooting prompt to diagnose DNS issues"
-- Analyze DHCP traffic: `analyze_dhcp_packets("/path/to/network.pcap")`
+- Get troubleshooting help: "Use network_troubleshooting prompt to diagnose DNS issues"  
+- Analyze DHCP traffic: `analyze_dhcp_packets("/path/to/network.pcap")` (file path or URL only)
+- Get file metadata: `analyze_capinfos("/path/to/capture.pcap")` (file path or URL only)
 
 ### MCP Inspector
 
