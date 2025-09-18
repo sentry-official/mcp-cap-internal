@@ -4,7 +4,7 @@
 
 ![mcpcap logo](https://raw.githubusercontent.com/mcpcap/mcpcap/main/readme-assets/mcpcap-logo.png)
 
-A modular Python MCP (Model Context Protocol) Server for analyzing PCAP files. mcpcap enables LLMs to read and analyze network packet captures with protocol-specific analysis tools that accept local files or remote URLs as parameters.
+A modular Python MCP (Model Context Protocol) Server for analyzing PCAP files. mcpcap enables LLMs to read and analyze network packet captures with protocol-specific analysis tools that accept local file paths or remote URLs as parameters (no file uploads - provide the path or URL to your PCAP file).
 
 ## Overview
 
@@ -12,8 +12,8 @@ mcpcap uses a modular architecture to analyze different network protocols found 
 
 ### Key Features
 
-- **Stateless MCP Tools**: Each analysis accepts PCAP file paths or URLs as parameters
-- **Modular Architecture**: DNS, DHCP, and ICMP modules with easy extensibility for new protocols  
+- **Stateless MCP Tools**: Each analysis accepts PCAP file paths or URLs as parameters (no file uploads)
+- **Modular Architecture**: DNS, DHCP, ICMP, and CapInfos modules with easy extensibility for new protocols  
 - **Local & Remote PCAP Support**: Analyze files from local storage or HTTP URLs
 - **Scapy Integration**: Leverages scapy's comprehensive packet parsing capabilities
 - **Specialized Analysis Prompts**: Security, networking, and forensic analysis guidance
@@ -75,7 +75,7 @@ Configure your MCP client (like Claude Desktop) to connect to the mcpcap server:
 
 ### 3. Analyze PCAP Files
 
-Use the analysis tools with any PCAP file:
+Use the analysis tools with any PCAP file by providing the file path or URL (not file uploads):
 
 **DNS Analysis:**
 ```
@@ -93,6 +93,12 @@ analyze_dhcp_packets("https://example.com/dhcp-capture.pcap")
 ```
 analyze_icmp_packets("/path/to/icmp.pcap")
 analyze_icmp_packets("https://example.com/ping-capture.pcap")
+```
+
+**CapInfos Analysis:**
+```
+analyze_capinfos("/path/to/any.pcap")
+analyze_capinfos("https://example.com/capture.pcap")
 ```
 
 ## Available Tools
@@ -124,6 +130,15 @@ analyze_icmp_packets("https://example.com/ping-capture.pcap")
   - Detect ICMP error messages (unreachable, time exceeded)
   - Monitor for potential ICMP-based attacks or reconnaissance
 
+### CapInfos Analysis Tools
+
+- **`analyze_capinfos(pcap_file)`**: PCAP file metadata and statistics
+  - File information (size, name, link layer encapsulation)
+  - Packet statistics (count, data size, average packet size)
+  - Temporal analysis (duration, timestamps, packet rates)
+  - Data throughput metrics (bytes/second, bits/second)
+  - Similar to Wireshark's capinfos(1) utility
+
 ## Analysis Prompts
 
 mcpcap provides specialized analysis prompts to guide LLM analysis:
@@ -152,7 +167,7 @@ mcpcap provides specialized analysis prompts to guide LLM analysis:
 mcpcap --modules dns              # DNS analysis only
 mcpcap --modules dhcp             # DHCP analysis only
 mcpcap --modules icmp             # ICMP analysis only  
-mcpcap --modules dns,dhcp,icmp    # All modules (default)
+mcpcap --modules dns,dhcp,icmp,capinfos    # All modules (default)
 ```
 
 ### Analysis Limits
@@ -165,7 +180,7 @@ mcpcap --max-packets 1000
 ### Complete Configuration Example
 
 ```bash
-mcpcap --modules dns,dhcp,icmp --max-packets 500
+mcpcap --modules dns,dhcp,icmp,capinfos --max-packets 500
 ```
 
 ## CLI Reference
@@ -175,8 +190,8 @@ mcpcap [--modules MODULES] [--max-packets N]
 ```
 
 **Options:**
-- `--modules MODULES`: Comma-separated modules to load (default: `dns,dhcp,icmp`)
-  - Available modules: `dns`, `dhcp`, `icmp`
+- `--modules MODULES`: Comma-separated modules to load (default: `dns,dhcp,icmp,capinfos`)
+  - Available modules: `dns`, `dhcp`, `icmp`, `capinfos`
 - `--max-packets N`: Maximum packets to analyze per file (default: unlimited)
 
 **Examples:**
@@ -212,6 +227,7 @@ Then test the tools:
 analyze_dns_packets("./examples/dns.pcap")
 analyze_dhcp_packets("./examples/dhcp.pcap")
 analyze_icmp_packets("./examples/icmp.pcap")
+analyze_capinfos("./examples/dns.pcap")
 ```
 
 ## Architecture
@@ -257,6 +273,7 @@ Both analysis tools accept remote PCAP files via HTTP/HTTPS URLs:
 analyze_dns_packets("https://wiki.wireshark.org/uploads/dns.cap")
 analyze_dhcp_packets("https://example.com/network-capture.pcap")
 analyze_icmp_packets("https://example.com/ping-test.pcap")
+analyze_capinfos("https://example.com/network-metadata.pcap")
 ```
 
 **Features:**

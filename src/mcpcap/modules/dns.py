@@ -21,8 +21,20 @@ class DNSModule(BaseModule):
         """
         Analyze DNS packets from a PCAP file and return comprehensive analysis results.
 
+        ⚠️  FILE UPLOAD LIMITATION: This MCP tool cannot process files uploaded through
+        Claude's web interface. Files must be accessible via URL or local file path.
+
+        SUPPORTED INPUT FORMATS:
+        - Remote files: "https://example.com/capture.pcap"
+        - Local files: "/absolute/path/to/capture.pcap"
+
+        UNSUPPORTED:
+        - Files uploaded through Claude's file upload feature
+        - Base64 file content
+        - Relative file paths
+
         Args:
-            pcap_file: Path to local PCAP file or HTTP URL to remote PCAP file
+            pcap_file: HTTP URL or absolute local file path to PCAP file
 
         Returns:
             A structured dictionary containing DNS packet analysis results

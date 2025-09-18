@@ -19,13 +19,22 @@ class CapInfosModule(BaseModule):
 
     def analyze_capinfos(self, pcap_file: str) -> dict[str, Any]:
         """
-        Return metadata from a PCAP file.
+        Return metadata from a PCAP file, similar to Wireshark's capinfos utility.
+
+        IMPORTANT: This tool expects a FILE PATH or URL, not file content.
+        - For local files: "/path/to/capture.pcap"
+        - For remote files: "https://example.com/capture.pcap"
+        - File uploads are NOT supported - save the file locally first
 
         Args:
             pcap_file: Path to local PCAP file or HTTP URL to remote PCAP file
+                      (NOT file content - must be a path or URL)
 
         Returns:
-            A structured dictionary containing metadata
+            A structured dictionary containing PCAP metadata including:
+            - File information (size, name, encapsulation type)
+            - Packet statistics (count, data size, average sizes)
+            - Temporal data (duration, timestamps, rates)
         """
         return self.analyze_packets(pcap_file)
 
